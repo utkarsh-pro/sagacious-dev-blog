@@ -1,0 +1,21 @@
+.editor {
+    height: 100%;
+    width: 100%;
+}
+
+.head {
+    height: 3rem;
+    background-color: #8D8D8D;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.cbtns {
+    border-radius: 50%;
+    height: 1rem;
+    width: 1rem;
+    margin: 0 0.25rem;
+}
