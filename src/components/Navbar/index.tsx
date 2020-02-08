@@ -6,7 +6,7 @@ function Navbar() {
         <div className={Classes.navbar}>
             <div className={Classes.logo}>Sagacious Dev</div>
             <div className={Classes.others}>
-                <div className={Classes.navitem}>Search Blogs</div>
+                <div className={Classes.navitem}>Search Posts</div>
                 <div className={Classes.navitem}>Login</div>
                 <div className={Classes.navitem}>Signup</div>
             </div>
