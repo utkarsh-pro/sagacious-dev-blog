@@ -1,0 +1,77 @@
+.landingPage {
+  background-image: url('../../assets//svg/Background.svg');
+  height: calc(100% - 4rem);
+  background-repeat: no-repeat;
+  background-position: bottom;
+  padding: 0 3rem;
+  color: var(--black);
+}
+
+.container {
+  padding: 4rem 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+  margin: auto;
+  width: 90%;
+}
+
+.head {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  animation: TextEnter 2s ease-in-out;
+}
+
+.sub {
+  font-size: 1.5rem;
+  animation: TextEnter 2s ease-in-out;
+}
+
+.editor {
+  height: 20rem;
+  max-width: 40rem;
+  animation: TextEnter 2s ease-in-out;
+}
+
+.bgsvg {
+  width: 100%;
+  display: block;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+@media (max-width: 950px) {
+  .container {
+    width: 100%;
+    grid-template-columns: auto;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 550px) {
+  .head {
+    font-size: 2.5rem;
+  }
+
+  .sub {
+    font-size: 1.25rem;
+  }
+
+  .container {
+    padding: 2rem 0 1rem;
+  }
+}
+
+@keyframes TextEnter{
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 100%;
+  }
+}

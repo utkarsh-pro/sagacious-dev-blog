@@ -1,8 +1,13 @@
 html, body, #root {
   height: 100%;
+  font-family: 'nunito', sans-serif, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
   box-sizing: border-box;
   margin: 0;
+}
+
+:root {
+  --black: #1c1c1c;
 }

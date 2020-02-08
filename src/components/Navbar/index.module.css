@@ -1,0 +1,57 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 4rem;
+    color: black;
+    font-weight: bold;
+    font-size: 1.25rem;
+    position: sticky;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
+    color: var(--black);
+}
+
+.logo {
+    font-size: 1.5rem;
+}
+
+.navitem {
+    display: inline-block;
+    margin: 0 0 0 2rem;
+}
+
+.logo, .navitem {
+    cursor: pointer;
+}
+
+.logo, .others {
+    margin: 0 3rem;
+}
+
+.hamburger {
+    display: none;
+    height: 1rem;
+    width: 1.5rem;
+    margin-right: 2rem;
+    cursor: pointer;
+}
+
+.line {
+    width: calc(100% - 2px);
+    border: 1px solid black;
+}
+
+@media (max-width: 550px) {
+    .others {
+        display: none;
+    }
+
+    .hamburger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: column;
+    }
+}

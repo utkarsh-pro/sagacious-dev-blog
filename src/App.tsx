@@ -1,12 +1,21 @@
 import React from 'react';
-import Editor from './components/Editor';
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import Navbar from './components/Navbar'
 import Classes from './App.module.css';
+import LandingPage from './components/LandingPage';
 
 const App = () => {
   return (
-    <div className={Classes.App}>
-      <Editor className={Classes.editor} language="typescript" />
-    </div>
+    <BrowserRouter>
+      <div className={Classes.App}>
+        <Navbar />
+        <Switch>
+          <Route path="/">
+            <LandingPage />
+          </Route>
+        </Switch>
+      </div>
+    </BrowserRouter>
   );
 }
 
