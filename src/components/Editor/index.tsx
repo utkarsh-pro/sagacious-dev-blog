@@ -105,6 +105,7 @@ function SupportedLanguages({ onClick, setDisplay }: SupportedLanguagesProps) {
             <div className={Classes.slinputContainer}>
                 <input
                     className={Classes.slinput}
+                    autoFocus
                     placeholder="Set Language"
                     value={value}
                     onChange={onChange} />
