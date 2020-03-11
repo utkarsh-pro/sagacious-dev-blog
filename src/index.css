@@ -4,10 +4,13 @@ html, body, #root {
 }
 
 body {
-  box-sizing: border-box;
   margin: 0;
 }
 
 :root {
   --black: #1c1c1c;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
 }
