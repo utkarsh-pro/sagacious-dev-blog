@@ -4,7 +4,7 @@ import Manoco from '@monaco-editor/react'
 import Classes from './index.module.css'
 
 // =============================== CONSTANTS ========================================
-const SUPPORTED_LANGUAGES = [
+export const SUPPORTED_LANGUAGES = [
     "javascript",
     "typescript",
     "cpp",
@@ -34,13 +34,13 @@ const SUPPORTED_LANGUAGES = [
 
 // =============================== INTERFACES =======================================
 
-export type SupportedLanguage = 'javascript' | 'typescript' | 'cpp' | 'python'
-
 export interface EditorProps {
-    language?: SupportedLanguage;
+    language?: string;
     code?: string;
     readOnly?: boolean;
     className?: string;
+    onChange?: (content: any) => void;
+    header?: boolean
 }
 
 interface EditorBtnProps {
@@ -122,15 +122,38 @@ function SupportedLanguages({ onClick, setDisplay }: SupportedLanguagesProps) {
 }
 
 // ******************************************************************************************************************
+function Header() {
+    return (
+        <div className={Classes.head}>
+            <div className={Classes.cbtns} style={{ backgroundColor: "#F53434" }} />
+            <div className={Classes.cbtns} style={{ backgroundColor: "#F5F932" }} />
+            <div className={Classes.cbtns} style={{ backgroundColor: "#00D809" }} />
+        </div>
+    )
+}
 
-function Editor({ language = "javascript", className, code = "", readOnly = false }: EditorProps) {
+
+// ******************************************************************************************************************
+
+function Editor({ language = "javascript", className, code = "", readOnly = false, onChange, header = false }: EditorProps) {
 
     const [currentLanguage, setCurrentLanguage] = useState<string>(language);
     const [editable, setEditable] = useState<boolean>(!readOnly)
     const [displayOptions, setDisplayOptions] = useState<boolean>(false)
 
+    const ref = useRef<any>(null)
+
     const setEditableHandler = () => setEditable(!editable)
     const setDisplayHandler = () => setDisplayOptions(!displayOptions)
+    const handleMount = (_valueGetter: any, editor: any) => {
+        ref.current = editor;
+
+        if (typeof onChange === "function") {
+            ref.current.onDidChangeModelContent((ev: any) => {
+                onChange(ref.current.getValue());
+            })
+        }
+    }
 
     return (
         <div className={className}>
@@ -142,16 +165,13 @@ function Editor({ language = "javascript", className, code = "", readOnly = fals
                         <SupportedLanguages onClick={setCurrentLanguage} setDisplay={setDisplayHandler} />
                     </div>
                 }
-                <div className={Classes.head}>
-                    <div className={Classes.cbtns} style={{ backgroundColor: "#F53434" }} />
-                    <div className={Classes.cbtns} style={{ backgroundColor: "#F5F932" }} />
-                    <div className={Classes.cbtns} style={{ backgroundColor: "#00D809" }} />
-                </div>
+                {header && <Header />}
                 <Manoco
                     options={{ readOnly: !editable }}
                     value={code}
                     language={currentLanguage}
                     theme="dark"
+                    editorDidMount={handleMount}
                     height="calc(100% - 3rem)" />
                 <div className={Classes.bottom}>
                     <EditorBtn onClick={setDisplayHandler} name={currentLanguage.toLocaleUpperCase()} options />

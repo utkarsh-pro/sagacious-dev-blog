@@ -38,6 +38,7 @@ function LandingPage() {
                     className={Classes.editor}
                     language="cpp"
                     code={initCode}
+                    header
                     readOnly />
             </div>
         </div>

@@ -33,6 +33,7 @@
   height: 20rem;
   max-width: 40rem;
   animation: TextEnter 2s ease-in-out;
+  box-shadow: 11px 40px 12px rgba(28, 28, 28, 0.35);
 }
 
 .bgsvg {
