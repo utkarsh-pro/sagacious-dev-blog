@@ -32,7 +32,9 @@ function WriteBlogPage() {
                 uptill = (flatCodeIndex[j + 1] as number) - i;
                 const parsed = content.split('').splice(i, uptill).join('')
                 const language = parsed.substring(parsed.indexOf("```") + 3, parsed.indexOf("\n"))
-                const text = parsed.substring(parsed.indexOf("\n") + 1, parsed.lastIndexOf("```"))
+                const lastIndex = parsed.lastIndexOf("```")
+                const terminate = lastIndex ? lastIndex : parsed.length
+                const text = parsed.substring(parsed.indexOf("\n") + 1, terminate)
                 code.push({
                     type: 'code',
                     content: {
