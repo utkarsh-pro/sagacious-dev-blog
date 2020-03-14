@@ -31,7 +31,20 @@ function WriteBlogPage() {
             if (flatCodeIndex[j] === i && j % 2 === 0) {
                 uptill = (flatCodeIndex[j + 1] as number) - i;
                 const parsed = content.split('').splice(i, uptill).join('')
-                const language = parsed.substring(parsed.indexOf("```") + 3, parsed.indexOf("\n"))
+                let language = parsed.substring(parsed.indexOf("```") + 3, parsed.indexOf("\n"))
+                const otherConfigArray = language.match(/\{.*?\}/gs) || []
+                const otherConfig: { [key: string]: any } = {}
+                // If the length is greater than 0 it suggests that a match was found
+                if (otherConfigArray.length) {
+                    otherConfigArray[0].split(" ").join("").slice(1, -1).split(",").forEach(el => {
+                        if (el.includes(":")) {
+                            const a1 = el.split(":");
+                            otherConfig[a1[0]] = a1[1];
+                        }
+                    })
+                    // Removing the config part from the language
+                    language = language.substring(0, language.indexOf("{"))
+                }
                 const lastIndex = parsed.lastIndexOf("```")
                 const terminate = lastIndex ? lastIndex : parsed.length
                 const text = parsed.substring(parsed.indexOf("\n") + 1, terminate)
@@ -39,7 +52,8 @@ function WriteBlogPage() {
                     type: 'code',
                     content: {
                         language,
-                        text
+                        text,
+                        config: otherConfig
                     }
                 });
                 i += uptill + 1;
@@ -62,12 +76,19 @@ function WriteBlogPage() {
 
     return (
         <div className={Classes.page}>
-            <div className={Classes.code}>
-                <Editor className={Classes.editor} language="markdown" onChange={handleEditorInput} header />
+            <div className={Classes.codeContainer}>
+                <h2 className={Classes.heading}>Write your markdown here</h2>
+                <Editor
+                    className={Classes.editor}
+                    language="markdown"
+                    onChange={handleEditorInput}
+                    header />
             </div>
-            <div className={Classes.preview}>
-                <h2>PREVIEW</h2>
-                <Preview content={content} />
+            <div className={Classes.previewContainer}>
+                <h2 className={Classes.heading}>Live Preview</h2>
+                <div className={Classes.preview}>
+                    <Preview content={content} />
+                </div>
             </div>
         </div>
     )

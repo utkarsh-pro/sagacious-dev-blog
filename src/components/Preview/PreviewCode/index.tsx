@@ -6,13 +6,20 @@ import Classes from './index.module.css'
 export interface CodePreviewProps {
     language: string;
     code: string;
+    height?: string;
 }
 
 // ======================= COMPONENT =============================
-function PreviewCode({ language, code }: CodePreviewProps) {
+function PreviewCode({ language, code, height }: CodePreviewProps) {
     if (!SUPPORTED_LANGUAGES.includes(language)) return <div />
     return (
-        <Editor language={language} code={code} readOnly className={Classes.editor} />
+        <Editor
+            language={language}
+            code={code}
+            readOnly
+            className={Classes.editor}
+            height={height}
+            header />
     )
 }
 

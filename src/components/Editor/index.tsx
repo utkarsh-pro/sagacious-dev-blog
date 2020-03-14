@@ -40,7 +40,8 @@ export interface EditorProps {
     readOnly?: boolean;
     className?: string;
     onChange?: (content: any) => void;
-    header?: boolean
+    header?: boolean;
+    height?: string;
 }
 
 interface EditorBtnProps {
@@ -135,7 +136,15 @@ function Header() {
 
 // ******************************************************************************************************************
 
-function Editor({ language = "javascript", className, code = "", readOnly = false, onChange, header = false }: EditorProps) {
+function Editor({
+    language = "javascript",
+    className,
+    code = "",
+    readOnly = false,
+    onChange,
+    header = false,
+    height
+}: EditorProps) {
 
     const [currentLanguage, setCurrentLanguage] = useState<string>(language);
     const [editable, setEditable] = useState<boolean>(!readOnly)
@@ -156,7 +165,7 @@ function Editor({ language = "javascript", className, code = "", readOnly = fals
     }
 
     return (
-        <div className={className}>
+        <div className={className} style={{ height }}>
             <div className={Classes.editor}>
                 {
                     displayOptions

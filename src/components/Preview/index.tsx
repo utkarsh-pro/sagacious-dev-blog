@@ -10,6 +10,7 @@ export interface Content {
     content: {
         language: string;
         text: string;
+        config?: any;
     }
 }
 
@@ -20,13 +21,17 @@ export interface PreviewProps {
 // ========================== COMPONENT ===================================
 
 function Preview({ content }: PreviewProps) {
-
-    console.log(content)
     return (
         <div className={Classes.previewContainer}>
             {content.map((data, index) => {
                 if (data.type === "markdown") return <PreviewMarkdown content={data.content.text} key={index} />
-                else return <PreviewCode code={data.content.text} language={data.content.language} key={index} />
+                else return (
+                    <PreviewCode
+                        code={data.content.text}
+                        language={data.content.language.trim()}
+                        key={index}
+                        height={data.content.config.height} />
+                )
             })}
         </div>
     )
