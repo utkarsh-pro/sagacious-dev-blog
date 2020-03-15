@@ -30,7 +30,7 @@ function Preview({ content }: PreviewProps) {
                         code={data.content.text}
                         language={data.content.language.trim()}
                         key={index}
-                        height={data.content.config.height} />
+                        config={data.content.config} />
                 )
             })}
         </div>

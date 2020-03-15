@@ -29,7 +29,8 @@ export const SUPPORTED_LANGUAGES = [
     "sql",
     "swift",
     "xml",
-    "yaml"
+    "yaml",
+    ""
 ]
 
 // =============================== INTERFACES =======================================
@@ -41,6 +42,7 @@ export interface EditorProps {
     className?: string;
     onChange?: (content: any) => void;
     header?: boolean;
+    footer?: boolean;
     height?: string;
 }
 
@@ -133,7 +135,6 @@ function Header() {
     )
 }
 
-
 // ******************************************************************************************************************
 
 function Editor({
@@ -142,7 +143,8 @@ function Editor({
     code = "",
     readOnly = false,
     onChange,
-    header = false,
+    footer = true,
+    header = true,
     height
 }: EditorProps) {
 
@@ -182,10 +184,14 @@ function Editor({
                     theme="dark"
                     editorDidMount={handleMount}
                     height="calc(100% - 3rem)" />
-                <div className={Classes.bottom}>
-                    <EditorBtn onClick={setDisplayHandler} name={currentLanguage.toLocaleUpperCase()} options />
-                    <EditorBtn onClick={setEditableHandler} name={`Edit: ${editable}`} />
-                </div>
+                {
+                    footer
+                    &&
+                    <div className={Classes.bottom}>
+                        <EditorBtn onClick={setDisplayHandler} name={currentLanguage.toLocaleUpperCase()} options />
+                        <EditorBtn onClick={setEditableHandler} name={`Edit: ${editable}`} />
+                    </div>
+                }
             </div>
         </div>
     )
