@@ -48,6 +48,6 @@
     border-left: .25em solid #dfe2e5;
 }
 
-.md img {
+.md img, .md iframe {
     max-width: 100%;
 }
