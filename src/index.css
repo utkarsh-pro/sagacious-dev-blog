@@ -9,8 +9,15 @@ body {
 
 :root {
   --black: #1c1c1c;
+  --blue: #425BE1;
+  --purple: #6212B3;
 }
 
 *, *:before, *:after {
   box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
 }

@@ -44,6 +44,23 @@
   left: 0;
 }
 
+.content {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.btnContainer {
+  width: 100%;
+}
+
+.btn {
+  animation: TextEnter 2s ease-in-out;
+  padding: 0.5rem 0.8rem;
+  color: var(--blue);
+  width: 15rem;
+}
+
 @media (max-width: 950px) {
   .container {
     width: 100%;
@@ -51,9 +68,17 @@
     justify-content: center;
     align-items: center;
   }
+
+  .btnContainer {
+    text-align: center;
+  }
+
+  .btn {
+    margin: 2rem auto 1rem;
+  }
 }
 
-@media (max-width: 550px) {
+@media (max-width: 650px) {
   .head {
     font-size: 2.5rem;
   }

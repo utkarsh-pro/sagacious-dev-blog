@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Classes from './App.module.css';
 import LandingPage from './components/LandingPage';
 import WriteBlogPage from './components/WriteBlogPage';
+import Login from './components/Login'
 
 const App = () => {
   return (
@@ -16,6 +17,9 @@ const App = () => {
           </Route>
           <Route path="/write-blog">
             <WriteBlogPage />
+          </Route>
+          <Route path="/login">
+            <Login />
           </Route>
         </Switch>
       </div>

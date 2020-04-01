@@ -1,12 +1,15 @@
 import React from 'react'
 import Classes from './index.module.css'
+import { Link } from 'react-router-dom'
 
 function Navbar() {
     return (
-        <div className={Classes.navbar}>
-            <div className={Classes.logo}>Sagacious Dev</div>
+        <nav className={Classes.navbar}>
+            <Link to="/">
+                <div className={Classes.logo}>Sagacious Dev</div>
+            </Link>
             <div className={Classes.others}>
-                <div className={Classes.navitem}>Search Posts</div>
+                <div className={Classes.navitem}>Explore</div>
                 <div className={Classes.navitem}>Login</div>
                 <div className={Classes.navitem}>Signup</div>
             </div>
@@ -15,7 +18,7 @@ function Navbar() {
                 <div className={Classes.line} />
                 <div className={Classes.line} />
             </div>
-        </div>
+        </nav>
     )
 }
 
