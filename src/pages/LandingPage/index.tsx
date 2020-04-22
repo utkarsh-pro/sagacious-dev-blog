@@ -1,10 +1,12 @@
 import React from 'react';
 import { Helmet } from 'react-helmet'
-import Editor from '../Editor';
-import Button from '../Button'
+import Editor from '../../components/Editor';
+import Button from '../../components/Button'
 
 import Classes from './index.module.css'
 import { Link } from 'react-router-dom';
+
+import Global from '../../global/global.module.css'
 
 // ============================================== COMPONENT ==============================================
 
@@ -29,7 +31,7 @@ function LandingPage() {
                 <meta name="description" content="Read and Write quality content using rich set of tools!" />
                 <title>Sagacious Dev Blogs</title>
             </Helmet>
-            <div className={Classes.container}>
+            <div className={`${Classes.container} ${Global.container}`}>
                 <div className={Classes.content}>
                     <div>
                         <div className={Classes.head}>Developer's Blog</div>

@@ -1,57 +1,194 @@
-.navbar {
+.nav{
+    padding: 3rem 0;
+    font-weight: 600;
+    font-size: 1.2rem;
+    position: fixed;
+    top: 0;
+    background-color: transparent;
+    width: 100%;
+    z-index: 1;
+    transition: 0.4s;
+}
+
+.navmin {
+    padding: 1.15rem;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.nav .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 4rem;
-    color: black;
-    font-weight: bold;
-    font-size: 1.25rem;
-    position: sticky;
-    top: 0;
-    background-color: rgba(255, 255, 255, 0.8);
-    z-index: 1000;
-    color: var(--black);
+    padding: 0;
 }
 
-.logo {
-    font-size: 1.5rem;
+.block {
+    margin: 0 1rem;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.navitem {
-    display: inline-block;
-    margin: 0 0 0 2rem;
+.navItem {
+    padding: 0 1rem 0.35rem;
 }
 
-.logo, .navitem {
+.active {
+    position: relative;
+}
+
+.active::after {
+    content: '';
+    position: absolute;
+    background-color: var(--gray-dark);
+    height: 2px;
+    width: 100%;
+}
+
+/* Mobile specific styles here */
+
+/* HAMBURGER */
+.hamburgerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2rem;
     cursor: pointer;
-}
-
-.logo, .others {
-    margin: 0 3rem;
+    z-index: 1000;
 }
 
 .hamburger {
+    margin-left: auto;
+    height: 0.25rem;
+    width: 1.85rem;
+    background: var(--black);
+    border-radius: 0.3rem;
+    transition: all 0.4s ease-in-out;
+}
+
+.hamburger::before,
+.hamburger::after{
+    content: '';
+    position: absolute;
+    width: 1.85rem;
+    height: 0.25rem;
+    background: var(--black);
+    border-radius: 0.3rem;
+    transition: all 0.4s ease-in-out;
+}
+
+.hamburger::before {
+    transform: translateY(-0.65rem);
+}
+
+.hamburger::after {
+    transform: translateY(0.65rem);
+}
+
+.open .hamburger{
+    transform: translateX(3rem);
+    background: transparent;
+}
+
+.open .hamburger::before {
+    transform: rotate(45deg) translate(-2.15rem, 2.15rem);
+    background-color: white;
+}
+
+.open .hamburger::after {
+    transform: rotate(-45deg) translate(-2.15rem, -2.15rem);
+    background-color: white;
+}
+
+.mobile {
     display: none;
-    height: 1rem;
-    width: 1.5rem;
-    margin-right: 2rem;
-    cursor: pointer;
 }
 
-.line {
-    width: calc(100% - 2px);
-    border: 1px solid black;
+@media screen and (max-width: 800px) {
+    .nav, .navmin {
+        padding: 1.15rem 3rem;
+        font-size: 1rem;
+        background: transparent;
+    }
+
+    .navmin {
+        background-color: white;
+    }
+
+    .navItem {
+        padding: 0 1rem;
+    }
+
+    .active {
+        background-color: white;
+        color: var(--black);
+        border-radius: 0.3rem;
+        border: none;
+    }
 }
 
-@media (max-width: 650px) {
-    .others {
+@media screen and (max-width: 720px) {
+    .block {
         display: none;
     }
 
-    .hamburger {
+    .mobile {
+        margin-left: auto;
         display: flex;
-        align-items: center;
-        justify-content: space-between;
         flex-direction: column;
+    }
+
+    .mobileBlock {
+        position: fixed;
+        top: 2rem;
+        right: 4rem;
+        background-color: var(--menu-black);
+        color: white;
+        z-index: 10;
+        transform: translate(50%, -50%) scale(0);
+        width: 200vw;
+        height: 200vw;
+        border-radius: 50%;
+        transition: all 0.4s ease;
+    }
+
+    .navItems {
+        position: fixed;
+        bottom: 25%;
+        left: 25%;
+        transform: translate(-25%, 25%);
+        display: flex;
+        flex: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .navItem{
+        font-size: 1.25rem;
+        margin: 1rem;
+    }
+
+    .open .mobileBlock {
+        transform: translate(50%, -50%) scale(1);
+    }
+
+    .open .navItem {
+        opacity: 1;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .navItem {
+        font-size: 1rem;
+        margin: 0.5rem;
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .navItem {
+        margin: 0.5rem;
     }
 }

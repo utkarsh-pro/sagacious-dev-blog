@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import Preview, { Content } from '../Preview'
-import Editor from '../Editor'
+import Preview, { Content } from '../../components/Preview'
+import Editor from '../../components/Editor'
 
 import Classes from './index.module.css'
 

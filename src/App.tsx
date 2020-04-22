@@ -2,8 +2,9 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Classes from './App.module.css';
-import LandingPage from './components/LandingPage';
-import WriteBlogPage from './components/WriteBlogPage';
+import LandingPage from './pages/LandingPage';
+import BlogEditorPage from './pages/BlogEditorPage';
+import WriteBlogPage from './pages/WriteBlogPage';
 import Login from './components/Login'
 
 const App = () => {
@@ -17,6 +18,9 @@ const App = () => {
           </Route>
           <Route path="/write-blog">
             <WriteBlogPage />
+          </Route>
+          <Route path="/blog-editor">
+            <BlogEditorPage />
           </Route>
           <Route path="/login">
             <Login />
