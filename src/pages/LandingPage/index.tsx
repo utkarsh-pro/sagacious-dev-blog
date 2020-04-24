@@ -48,6 +48,7 @@ function LandingPage() {
                     language="cpp"
                     code={initCode}
                     header
+                    footer
                     readOnly />
             </div>
         </div>

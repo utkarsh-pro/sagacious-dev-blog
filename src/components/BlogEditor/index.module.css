@@ -1,7 +1,8 @@
 .editor {
+    padding: 2rem;
+    background-color: white;
+    box-shadow: 0 24px 24px -18px rgba(69,104,129,.33), 0 9px 45px 0 rgba(114,119,160,.12);
+    border-radius: 0.5rem;
     width: 100%;
-    min-height: 10rem;
-    border-radius: 0.3rem;
-    box-shadow: 0 0 3px 1px rgba(15, 15, 15, 0.18);
-    padding: 0.5rem;
+    min-height: 90vh;
 }

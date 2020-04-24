@@ -1,0 +1,7 @@
+.toolbarContainer {
+    height: 1rem;
+    width: 3rem;
+    background-color: blueviolet;
+    position: absolute;
+    transform: translate(-50%, -100%);
+}

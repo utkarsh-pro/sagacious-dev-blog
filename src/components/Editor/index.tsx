@@ -44,6 +44,8 @@ export interface EditorProps {
     header?: boolean;
     footer?: boolean;
     height?: string;
+    onBlur?: (event?: any) => void;
+    onFocus?: (event?: any) => void;
 }
 
 interface EditorBtnProps {
@@ -137,15 +139,38 @@ function Header() {
 
 // ******************************************************************************************************************
 
+// =========================================== HELPER FUNCTION ===========================================
+
+function getHeight(renderFooter: boolean, renderHeader: boolean) {
+    let height = 0;
+
+    switch (true) {
+        case renderFooter:
+            height += 1.5
+            break;
+        case renderHeader:
+            height += 1.5
+            break;
+        default:
+            break;
+    }
+
+    return height
+}
+
+// =========================================== COMPONENT =================================================
+
 function Editor({
     language = "javascript",
     className,
     code = "",
     readOnly = false,
     onChange,
-    footer = true,
-    header = true,
-    height
+    footer = false,
+    header = false,
+    height = "20rem",
+    onBlur,
+    onFocus
 }: EditorProps) {
 
     const [currentLanguage, setCurrentLanguage] = useState<string>(language);
@@ -158,6 +183,14 @@ function Editor({
     const setDisplayHandler = () => setDisplayOptions(!displayOptions)
     const handleMount = (_valueGetter: any, editor: any) => {
         ref.current = editor;
+
+        ref.current.onDidBlurEditorText((ev: any) => {
+            if (onBlur) onBlur(ev)
+        })
+
+        ref.current.onDidFocusEditorText((ev: any) => {
+            if (onFocus) onFocus(ev)
+        })
 
         if (typeof onChange === "function") {
             ref.current.onDidChangeModelContent((ev: any) => {
@@ -183,7 +216,7 @@ function Editor({
                     language={currentLanguage}
                     theme="dark"
                     editorDidMount={handleMount}
-                    height="calc(100% - 3rem)" />
+                    height={`calc(100% - ${getHeight(footer, header)}rem)`} />
                 {
                     footer
                     &&

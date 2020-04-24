@@ -1,11 +1,13 @@
 .wrapper {
     min-height: 100vh;
     width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 12rem 0 2rem;
 }
 
 .container {
-    width: 50%;
+    width: 95%;
+    border-radius: 5rem;
+    padding: 4rem;
+    background: #eef5fa;
+    height: 100%;
 }
