@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
 .editor {
     padding: 2rem;
     background-color: white;
@@ -7,45 +5,25 @@
     border-radius: 0.5rem;
     width: 100%;
     min-height: 90vh;
-    font-family: 'Roboto', sans-serif;
+    color: rgba(0, 0, 0, 0.85);
 }
 
-.editor h1 {
-    font-size: 2.5rem;
+.editorH1 {
+    font-size: 2.4rem;
+    font-weight: 500;
 }
 
-.editor h2 {
-    font-size: 2.1rem;
+.editorH2 {
+    font-size: 2rem;
+    font-weight: 500;
 }
 
-.editor blockquote {
-    display: block;
-    border-width: 2px 0;
-    border-style: solid;
-    border-color: #eee;
-    padding: 1.5em 0 0.5em;
-    margin: 1.5em 0;
-    position: relative;
+.editorText {
+    font-size: 1.25rem;
 }
 
-.editor blockquote:before {
-    content: '\201C';
-    position: absolute;
-    top: -25%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    width: 3rem;
-    height: 2rem;
-    font: 6em/1.08em 'PT Sans', sans-serif;
-    color: #666;
-    text-align: center;
-}
-
-.editor blockquote:after {
-    content: "\2013 \2003" attr(cite);
-    display: block;
-    text-align: right;
-    font-size: 0.875em;
-    color: #e74c3c;
+.editorBlockquote {
+    padding: 0 1rem;
+    color: #6a737d;
+    border-left: .25rem solid #dfe2e5;
 }

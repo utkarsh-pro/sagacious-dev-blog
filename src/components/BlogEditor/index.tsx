@@ -20,6 +20,22 @@ const EditorWrapper = (props: any) => {
             height={blockProps.height} />)
 }
 
+// ====================================================================================================
+
+const blockStyleFn = (ContentBlock: any) => {
+    const type = ContentBlock.getType();
+    switch (type) {
+        case "header-one":
+            return Classes.editorH1;
+        case "header-two":
+            return Classes.editorH2;
+        case "blockquote":
+            return Classes.editorBlockquote;
+        default:
+            return Classes.editorText
+    }
+}
+
 // =====================================================================================================
 
 function BlogEditor() {
@@ -99,6 +115,7 @@ function BlogEditor() {
                     readOnly={editorIsUp}
                     editorState={state}
                     onChange={onChangeHandler}
+                    blockStyleFn={blockStyleFn}
                     blockRendererFn={memoizedBockRendererFn} />
             </div>
             <SideToolbar editor={state} editorRef={DraftRef} toggleBlockStyle={toggleBlockStyle} />
