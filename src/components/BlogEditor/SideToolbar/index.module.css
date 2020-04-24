@@ -21,3 +21,38 @@
     height: 1.5rem;
     width: 1.5rem;
 }
+
+.controls {
+    font-family: 'Helvetica', sans-serif;
+    font-size: 0.9rem;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+.styleButton {
+    color: black;
+    cursor: pointer;
+    padding: 0.2rem;
+}
+
+.activeButton {
+    color: #5890ff;
+}
+
+.drawer {
+    position: absolute;
+    top: 0;
+    left: 3rem;
+    transform: translateY(-25%);
+    background-color: white;
+    box-shadow: 0 3px 15px -3px rgba(13,20,33,.13);
+    border-radius: 0.8rem;
+    padding: 0.5rem 0.25rem;
+}
+
+.hide {
+    display: none;
+}

@@ -96,8 +96,6 @@ function InlineToolbar({ editor, editorRef, toggleInlineStyle }: ToolbarConfig) 
             // but rather with a small offset so the caret doesn't overlap with the text.
             const extraTopOffset = -(16 * 0.5);
 
-            console.log(selectionRect)
-
             setPostion({
                 top:
                     editorRoot.offsetTop +

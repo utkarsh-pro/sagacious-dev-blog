@@ -6,6 +6,7 @@ import { Editor as DraftEditor, EditorState, AtomicBlockUtils, RichUtils } from 
 import Editor from '../Editor';
 import SideToolbar from './SideToolbar'
 import InlineToolbar from './InlineToolbar'
+import { getNodeFromKey } from './utility';
 
 // =====================================================================================================
 
@@ -31,7 +32,6 @@ function BlogEditor() {
     const memoizedBockRendererFn = useCallback((block) => {
         const type = block.getType();
         if (type === "atomic") {
-            console.log(block)
             return {
                 component: EditorWrapper,
                 editable: true,
@@ -48,11 +48,52 @@ function BlogEditor() {
         onChangeHandler(RichUtils.toggleInlineStyle(state, inlineStyle))
     }
 
+    const toggleBlockStyle = (blockType: string) => {
+        if (blockType !== "atomic")
+            onChangeHandler(RichUtils.toggleBlockType(state, blockType));
+
+        else {
+            // Add Monaco editor to the current state
+            const contentState = state.getCurrentContent()
+            const contentStateWithEntity = contentState.createEntity("MONACO", "MUTABLE");
+            const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+            const newEditorState = EditorState.set(
+                state,
+                { currentContent: contentStateWithEntity }
+            );
+            const newState = AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, "")
+            setState(newState)
+
+            // Get a reference to monaco instance
+            const newContentState = newState.getCurrentContent();
+            const draftKey = newContentState.getLastBlock().getKey()
+            const monacoKey = newContentState.getKeyBefore(draftKey)
+
+
+            // Get the monaco node
+            // This is done asynchronously because
+            // There is usually a delay between block rendering by
+            // Draft js
+            setTimeout(() => {
+                console.log("Entity Key:", monacoKey)
+                const monaocoParent = getNodeFromKey(monacoKey);
+
+                const divReferenceToMonaocParent = (monaocoParent as HTMLDivElement);
+
+                divReferenceToMonaocParent.contentEditable = "false"
+                divReferenceToMonaocParent.style.marginLeft = "0"
+                divReferenceToMonaocParent.style.marginRight = "0"
+
+            }, 0)
+        }
+    }
+
     const onChangeHandler = (state: EditorState) => setState(state)
+    const focus = () => DraftRef.current?.focus()
 
     return (
         <div className={Classes.container}>
-            <div className={Classes.editor} onClick={() => DraftRef.current?.focus()}>
+            <div className={Classes.editor} onClick={focus}>
                 <DraftEditor
                     ref={DraftRef}
                     readOnly={editorIsUp}
@@ -60,20 +101,9 @@ function BlogEditor() {
                     onChange={onChangeHandler}
                     blockRendererFn={memoizedBockRendererFn} />
             </div>
-            <SideToolbar editor={state} editorRef={DraftRef} />
+            <SideToolbar editor={state} editorRef={DraftRef} toggleBlockStyle={toggleBlockStyle} />
             <InlineToolbar editor={state} editorRef={DraftRef} toggleInlineStyle={toggleInlineStyle} />
 
-            <div onClick={() => {
-                const contentState = state.getCurrentContent()
-                const contentStateWithEntity = contentState.createEntity("MONACO", "MUTABLE");
-                const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-                const newEditorState = EditorState.set(
-                    state,
-                    { currentContent: contentStateWithEntity }
-                );
-                setState(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ""))
-
-            }}>CLICK</div>
             <div onClick={() => console.log(state.toJS())}>Get the Data (See Console)</div>
         </div>
     );
