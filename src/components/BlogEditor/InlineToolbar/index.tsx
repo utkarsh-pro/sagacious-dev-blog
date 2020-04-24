@@ -23,14 +23,62 @@ const getVisibleSelectionRect = () => {
 export interface ToolbarConfig {
     editor: any;
     editorRef: any;
+    toggleInlineStyle?: (inlineStyle: string) => void;
     children?: any
 }
 
-// ==================================== COMPONENT ===============================
+// ==================================== HELPER COMPONENT =======================
+const StyleButton = (props: any) => {
+
+    const onToggle = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+        e.preventDefault();
+        props.onToggle(props.style);
+    };
+
+    let className = Classes.styleButton;
+    if (props.active) {
+        className += " " + Classes.activeButton;
+    }
+
+    return (
+        <span className={className} onMouseDown={onToggle}>
+            {props.label}
+        </span>
+    );
+
+}
+
+const INLINE_STYLES = [
+    { label: 'Bold', style: 'BOLD' },
+    { label: 'Italic', style: 'ITALIC' },
+    { label: 'Underline', style: 'UNDERLINE' }
+];
+
+const InlineStyleControls = (props: any) => {
+    const currentStyle = props.editorState.getCurrentInlineStyle();
+
+    return (
+        <div className={Classes.controls}>
+            {INLINE_STYLES.map((type) =>
+                <StyleButton
+                    key={type.label}
+                    active={currentStyle.has(type.style)}
+                    label={type.label}
+                    onToggle={props.onToggle}
+                    style={type.style}
+                />
+            )}
+        </div>
+    );
+};
+
+// ==================================== CONSTANTS ===============================
 
 const initialPosition = { top: -100, left: -100 }
 
-function InlineToolbar({ editor, editorRef }: ToolbarConfig) {
+// ==================================== COMPONENT ===============================
+
+function InlineToolbar({ editor, editorRef, toggleInlineStyle }: ToolbarConfig) {
     const [position, setPostion] = useState(initialPosition)
 
     useEffect(() => {
@@ -46,7 +94,7 @@ function InlineToolbar({ editor, editorRef }: ToolbarConfig) {
 
             // The toolbar shouldn't be positioned directly on top of the selected text,
             // but rather with a small offset so the caret doesn't overlap with the text.
-            const extraTopOffset = -5;
+            const extraTopOffset = -(16 * 0.5);
 
             console.log(selectionRect)
 
@@ -67,10 +115,13 @@ function InlineToolbar({ editor, editorRef }: ToolbarConfig) {
 
     }, [editor, editorRef])
 
-
     return (
         <div className={Classes.toolbarContainer} style={{ ...position }}>
-
+            {
+                position.top !== initialPosition.top
+                &&
+                <InlineStyleControls editorState={editor} onToggle={toggleInlineStyle} />
+            }
         </div>
     )
 }

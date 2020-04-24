@@ -1,11 +1,13 @@
 import React, { useState, useCallback, useRef } from 'react'
 import Classes from './index.module.css'
 
-import { Editor as DraftEditor, EditorState, AtomicBlockUtils } from 'draft-js'
+import { Editor as DraftEditor, EditorState, AtomicBlockUtils, RichUtils } from 'draft-js'
 
 import Editor from '../Editor';
 import SideToolbar from './SideToolbar'
 import InlineToolbar from './InlineToolbar'
+
+// =====================================================================================================
 
 const EditorWrapper = (props: any) => {
     const { blockProps } = props;
@@ -16,6 +18,8 @@ const EditorWrapper = (props: any) => {
             language={blockProps.language}
             height={blockProps.height} />)
 }
+
+// =====================================================================================================
 
 function BlogEditor() {
 
@@ -40,6 +44,12 @@ function BlogEditor() {
         }
     }, [])
 
+    const toggleInlineStyle = (inlineStyle: string) => {
+        onChangeHandler(RichUtils.toggleInlineStyle(state, inlineStyle))
+    }
+
+    const onChangeHandler = (state: EditorState) => setState(state)
+
     return (
         <div className={Classes.container}>
             <div className={Classes.editor} onClick={() => DraftRef.current?.focus()}>
@@ -47,11 +57,12 @@ function BlogEditor() {
                     ref={DraftRef}
                     readOnly={editorIsUp}
                     editorState={state}
-                    onChange={setState}
+                    onChange={onChangeHandler}
                     blockRendererFn={memoizedBockRendererFn} />
             </div>
             <SideToolbar editor={state} editorRef={DraftRef} />
-            <InlineToolbar editor={state} editorRef={DraftRef} />
+            <InlineToolbar editor={state} editorRef={DraftRef} toggleInlineStyle={toggleInlineStyle} />
+
             <div onClick={() => {
                 const contentState = state.getCurrentContent()
                 const contentStateWithEntity = contentState.createEntity("MONACO", "MUTABLE");
