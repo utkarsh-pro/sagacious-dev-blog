@@ -91,9 +91,7 @@ function SideToolbar({ editor, editorRef, toggleBlockStyle }: ToolbarConfig) {
         const currentContent = editor.getCurrentContent();
         const currentContentBlock = currentContent.getBlockForKey(start);
 
-        const node = getNodeFromKey(currentContentBlock.getKey())
-
-        const editorRoot = editorRef.current.refs?.editor || editorRef.current.editor
+        const node = getNodeFromKey(currentContentBlock.getKey()) as HTMLDivElement
 
         // console.log(
         //     (node as HTMLDivElement).offsetTop + (editorRoot as HTMLDivElement).offsetTop,
@@ -102,10 +100,15 @@ function SideToolbar({ editor, editorRef, toggleBlockStyle }: ToolbarConfig) {
 
         // position.current.left = (editorRoot as HTMLDivElement).offsetLeft - (16 * 5)
         // position.current.top = (node as HTMLDivElement).offsetTop
-        console.log((editorRoot as HTMLDivElement).offsetLeft)
+        let totalNodeHeight = node.clientHeight
+        const computedStyle = window.getComputedStyle(node)
+
+        if (computedStyle.marginTop && computedStyle.marginBottom)
+            totalNodeHeight += parseInt(computedStyle.marginBottom) + parseInt(computedStyle.marginTop)
+
         setPostion({
-            left: (editorRoot as HTMLDivElement).offsetLeft - (16 * 5),
-            top: (node as HTMLDivElement).offsetTop + ((node as HTMLDivElement).clientHeight / 2) + (16 * 2)
+            left: - (16 * 5),
+            top: node.offsetTop + (totalNodeHeight / 2) + (16 * 2)
         })
 
     }, [editor, editorRef])

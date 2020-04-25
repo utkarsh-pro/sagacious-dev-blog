@@ -85,25 +85,21 @@ function InlineToolbar({ editor, editorRef, toggleInlineStyle }: ToolbarConfig) 
         const selectionState = editor.getSelection()
 
         if (!selectionState.isCollapsed()) {
-            const editorRoot = editorRef.current.refs?.editor || editorRef.current.editor
-
-            const editorRootRect = editorRoot.getBoundingClientRect();
             const selectionRect = getVisibleSelectionRect();
 
             if (!selectionRect) return;
 
             // The toolbar shouldn't be positioned directly on top of the selected text,
             // but rather with a small offset so the caret doesn't overlap with the text.
-
+            const offset = (16 * 0.5);
+            const offsetTop = window.pageYOffset || document.documentElement.scrollTop
+            console.log(offsetTop)
 
             setPostion({
-                top:
-                    editorRoot.offsetTop +
-                    (selectionRect.top - editorRootRect.top),
+                top: (selectionRect.top + offsetTop - offset),
 
                 left:
-                    editorRoot.offsetLeft +
-                    (selectionRect.left - editorRootRect.left) +
+                    selectionRect.left +
                     selectionRect.width / 2,
             });
 
