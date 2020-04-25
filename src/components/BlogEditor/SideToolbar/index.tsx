@@ -93,13 +93,6 @@ function SideToolbar({ editor, editorRef, toggleBlockStyle }: ToolbarConfig) {
 
         const node = getNodeFromKey(currentContentBlock.getKey()) as HTMLDivElement
 
-        // console.log(
-        //     (node as HTMLDivElement).offsetTop + (editorRoot as HTMLDivElement).offsetTop,
-        //     (editorRoot as HTMLDivElement).offsetLeft - (16 * 5)
-        // )
-
-        // position.current.left = (editorRoot as HTMLDivElement).offsetLeft - (16 * 5)
-        // position.current.top = (node as HTMLDivElement).offsetTop
         let totalNodeHeight = node.clientHeight
         const computedStyle = window.getComputedStyle(node)
 
