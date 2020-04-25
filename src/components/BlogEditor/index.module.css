@@ -5,25 +5,34 @@
     border-radius: 0.5rem;
     width: 100%;
     min-height: 90vh;
-    color: rgba(0, 0, 0, 0.85);
+    color: rgba(0, 0, 0, 0.8);
 }
 
 .editorH1 {
     font-size: 2.4rem;
     font-weight: 500;
+    margin: 0.2rem 0;
 }
 
 .editorH2 {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 500;
+    margin: 0.2rem 0;
 }
 
 .editorText {
-    font-size: 1.25rem;
+    font-size: 1.22rem;
+    margin: 0.2rem 0;
 }
 
 .editorBlockquote {
     padding: 0 1rem;
     color: #6a737d;
     border-left: .25rem solid #dfe2e5;
+    margin: 0.2rem 0;
+    font-size: 1.22rem;
+}
+
+.editorAtomic {
+    margin: 0.2rem 0;
 }

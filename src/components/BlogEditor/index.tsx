@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react'
 import Classes from './index.module.css'
 
-import { Editor as DraftEditor, EditorState, AtomicBlockUtils, RichUtils } from 'draft-js'
+import { Editor as DraftEditor, EditorState, AtomicBlockUtils, RichUtils, getDefaultKeyBinding } from 'draft-js'
 
 import Editor from '../Editor';
 import SideToolbar from './SideToolbar'
@@ -31,6 +31,8 @@ const blockStyleFn = (ContentBlock: any) => {
             return Classes.editorH2;
         case "blockquote":
             return Classes.editorBlockquote;
+        case "atomic":
+            return Classes.editorAtomic;
         default:
             return Classes.editorText
     }
@@ -61,12 +63,12 @@ function BlogEditor() {
     }, [])
 
     const toggleInlineStyle = (inlineStyle: string) => {
-        onChangeHandler(RichUtils.toggleInlineStyle(state, inlineStyle))
+        setState(RichUtils.toggleInlineStyle(state, inlineStyle))
     }
 
-    const toggleBlockStyle = (blockType: string) => {
+    const toggleBlockType = (blockType: string) => {
         if (blockType !== "atomic")
-            onChangeHandler(RichUtils.toggleBlockType(state, blockType));
+            setState(RichUtils.toggleBlockType(state, blockType));
 
         else {
             // Add Monaco editor to the current state
@@ -91,34 +93,63 @@ function BlogEditor() {
             // There is usually a delay between block rendering by
             // Draft js
             setTimeout(() => {
-                console.log("Entity Key:", monacoKey)
                 const monaocoParent = getNodeFromKey(monacoKey);
 
                 const divReferenceToMonaocParent = (monaocoParent as HTMLDivElement);
 
                 divReferenceToMonaocParent.contentEditable = "false"
-                divReferenceToMonaocParent.style.marginLeft = "0"
-                divReferenceToMonaocParent.style.marginRight = "0"
-
             }, 0)
         }
     }
 
     const onChangeHandler = (state: EditorState) => setState(state)
-    const focus = () => DraftRef.current?.focus()
+    const focus = () => {
+        DraftRef.current?.focus()
+    }
+
+    const handleKeyCommand = (command: string, editorState: EditorState) => {
+        const newState = RichUtils.handleKeyCommand(editorState, command);
+        if (newState) {
+            setState(newState);
+            return true;
+        }
+        return false;
+    }
+
+    const mapKeyToEditorCommand = (e: any) => {
+        if (e.keyCode === 9 /* TAB */) {
+            console.log("Here")
+            const newEditorState = RichUtils.onTab(
+                e,
+                state,
+                8, /* maxDepth */
+            );
+            if (newEditorState !== state) {
+                setState(newEditorState);
+            }
+            return;
+        }
+
+        return getDefaultKeyBinding(e);
+    }
 
     return (
         <div className={Classes.container}>
             <div className={Classes.editor} onClick={focus}>
+                {/* Adding this because of incompatible types
+                // @ts-ignore */}
                 <DraftEditor
+                    spellCheck
                     ref={DraftRef}
                     readOnly={editorIsUp}
                     editorState={state}
                     onChange={onChangeHandler}
                     blockStyleFn={blockStyleFn}
+                    keyBindingFn={mapKeyToEditorCommand}
+                    handleKeyCommand={handleKeyCommand}
                     blockRendererFn={memoizedBockRendererFn} />
             </div>
-            <SideToolbar editor={state} editorRef={DraftRef} toggleBlockStyle={toggleBlockStyle} />
+            <SideToolbar editor={state} editorRef={DraftRef} toggleBlockStyle={toggleBlockType} />
             <InlineToolbar editor={state} editorRef={DraftRef} toggleInlineStyle={toggleInlineStyle} />
 
             <div onClick={() => console.log(state.toJS())}>Get the Data (See Console)</div>

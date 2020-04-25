@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Classes from './index.module.css'
 import { ReactComponent as Plus } from '../../../assets/svg/plus.svg'
+import { ReactComponent as H1 } from '../../../assets/svg/heading.svg'
+import { ReactComponent as H2 } from '../../../assets/svg/subheading.svg'
+import { ReactComponent as Blockquote } from '../../../assets/svg/blockquote.svg'
+import { ReactComponent as UL } from '../../../assets/svg/unorderedlist.svg'
+import { ReactComponent as OL } from '../../../assets/svg/orderedlist.svg'
+import { ReactComponent as Code } from '../../../assets/svg/code.svg'
+import { getNodeFromKey } from '../utility'
 
 // ==================================== INTERFACE ===============================
 
@@ -10,35 +17,43 @@ export interface ToolbarConfig {
     toggleBlockStyle?: (blockType: string) => void;
     children?: any
 }
+
+interface IStyleButton {
+    onToggle: (style: string) => void;
+    active: boolean;
+    style: string;
+    label: JSX.Element;
+}
+
 // ==================================== HELPER COMPONENT ========================
 
-const StyleButton = (props: any) => {
+const StyleButton = ({ onToggle, active, style, label }: IStyleButton) => {
 
-    const onToggle = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    const onToggleHandler = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
         e.preventDefault();
-        props.onToggle(props.style);
+        onToggle(style);
     };
 
     let className = Classes.styleButton;
-    if (props.active) {
+    if (active) {
         className += " " + Classes.activeButton;
     }
 
     return (
-        <span className={className} onMouseDown={onToggle}>
-            {props.label}
+        <span className={className} onMouseDown={onToggleHandler}>
+            {label}
         </span>
     );
 
 }
 
 const BLOCK_TYPES = [
-    { label: 'H1', style: 'header-one' },
-    { label: 'H2', style: 'header-two' },
-    { label: 'Blockquote', style: 'blockquote' },
-    { label: 'UL', style: 'unordered-list-item' },
-    { label: 'OL', style: 'ordered-list-item' },
-    { label: 'Code Block', style: 'atomic' },
+    { label: <H1 className={Classes.icon} />, style: 'header-one' },
+    { label: <H2 className={Classes.icon} />, style: 'header-two' },
+    { label: <Blockquote className={Classes.icon} />, style: 'blockquote' },
+    { label: <UL className={Classes.icon} />, style: 'unordered-list-item' },
+    { label: <OL className={Classes.icon} />, style: 'ordered-list-item' },
+    { label: <Code className={Classes.icon} />, style: 'atomic' },
 ];
 
 const BlockStyleControls = (props: any) => {
@@ -51,9 +66,9 @@ const BlockStyleControls = (props: any) => {
 
     return (
         <div className={Classes.controls}>
-            {BLOCK_TYPES.map((type) =>
+            {BLOCK_TYPES.map((type, idx) =>
                 <StyleButton
-                    key={type.label}
+                    key={`${type.style}-${idx}`}
                     active={type.style === blockType}
                     label={type.label}
                     onToggle={props.onToggle}
@@ -76,9 +91,7 @@ function SideToolbar({ editor, editorRef, toggleBlockStyle }: ToolbarConfig) {
         const currentContent = editor.getCurrentContent();
         const currentContentBlock = currentContent.getBlockForKey(start);
 
-        const node = document.querySelectorAll(
-            `[data-offset-key="${currentContentBlock.getKey()}-0-0"]`
-        )[0];
+        const node = getNodeFromKey(currentContentBlock.getKey())
 
         const editorRoot = editorRef.current.refs?.editor || editorRef.current.editor
 
@@ -91,7 +104,7 @@ function SideToolbar({ editor, editorRef, toggleBlockStyle }: ToolbarConfig) {
         // position.current.top = (node as HTMLDivElement).offsetTop
         setPostion({
             left: (editorRoot as HTMLDivElement).offsetLeft - (16 * 5),
-            top: (node as HTMLDivElement).offsetTop
+            top: (node as HTMLDivElement).offsetTop + ((node as HTMLDivElement).clientHeight / 2)
         })
 
     }, [editor, editorRef])
@@ -100,7 +113,7 @@ function SideToolbar({ editor, editorRef, toggleBlockStyle }: ToolbarConfig) {
     return (
         <div className={Classes.toolbarContainer} style={{ ...position }}>
             <div className={Classes.iconContainer} onClick={() => setShow(!show)}>
-                <Plus className={Classes.icon} />
+                <Plus className={Classes.plusIcon} />
             </div>
             <div className={`${Classes.drawer} ${!show ? Classes.hide : Classes.show}`}>
                 <BlockStyleControls
