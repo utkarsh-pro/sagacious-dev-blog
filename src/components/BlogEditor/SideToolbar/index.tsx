@@ -102,9 +102,10 @@ function SideToolbar({ editor, editorRef, toggleBlockStyle }: ToolbarConfig) {
 
         // position.current.left = (editorRoot as HTMLDivElement).offsetLeft - (16 * 5)
         // position.current.top = (node as HTMLDivElement).offsetTop
+        console.log((editorRoot as HTMLDivElement).offsetLeft)
         setPostion({
             left: (editorRoot as HTMLDivElement).offsetLeft - (16 * 5),
-            top: (node as HTMLDivElement).offsetTop + ((node as HTMLDivElement).clientHeight / 2)
+            top: (node as HTMLDivElement).offsetTop + ((node as HTMLDivElement).clientHeight / 2) + (16 * 2)
         })
 
     }, [editor, editorRef])

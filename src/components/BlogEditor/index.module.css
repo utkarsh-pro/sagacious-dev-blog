@@ -1,3 +1,7 @@
+.container {
+    position: relative;
+}
+
 .editor {
     padding: 2rem;
     background-color: white;
@@ -31,6 +35,10 @@
     border-left: .25rem solid #dfe2e5;
     margin: 0.2rem 0;
     font-size: 1.22rem;
+}
+
+.editorUL, .editorOL {
+    margin: 0.2rem 0;
 }
 
 .editorAtomic {

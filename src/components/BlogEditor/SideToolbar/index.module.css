@@ -3,11 +3,11 @@
     height: 2rem;
     width: 2rem;
     border-radius: 50%;
-    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
     transform: translateY(-50%);
+    z-index: 100;
 }
 
 .iconContainer {
@@ -37,7 +37,7 @@
     cursor: pointer;
     height: 1.75rem;
     width: 1.75rem;
-    background-color: transparent;
+    background-color: white;
     margin: 0 0.15rem;
     display: flex;
     justify-content: center;

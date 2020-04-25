@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef } from 'react'
 import Classes from './index.module.css'
 
 import { Editor as DraftEditor, EditorState, AtomicBlockUtils, RichUtils, getDefaultKeyBinding } from 'draft-js'
+import 'draft-js/dist/Draft.css'
 
 import Editor from '../Editor';
 import SideToolbar from './SideToolbar'
@@ -31,6 +32,10 @@ const blockStyleFn = (ContentBlock: any) => {
             return Classes.editorH2;
         case "blockquote":
             return Classes.editorBlockquote;
+        case "ordered-list-item":
+            return Classes.editorOL;
+        case "unordered-list-item":
+            return Classes.editorUL;
         case "atomic":
             return Classes.editorAtomic;
         default:
@@ -136,6 +141,8 @@ function BlogEditor() {
     return (
         <div className={Classes.container}>
             <div className={Classes.editor} onClick={focus}>
+                <SideToolbar editor={state} editorRef={DraftRef} toggleBlockStyle={toggleBlockType} />
+                <InlineToolbar editor={state} editorRef={DraftRef} toggleInlineStyle={toggleInlineStyle} />
                 {/* Adding this because of incompatible types
                 // @ts-ignore */}
                 <DraftEditor
@@ -149,8 +156,6 @@ function BlogEditor() {
                     handleKeyCommand={handleKeyCommand}
                     blockRendererFn={memoizedBockRendererFn} />
             </div>
-            <SideToolbar editor={state} editorRef={DraftRef} toggleBlockStyle={toggleBlockType} />
-            <InlineToolbar editor={state} editorRef={DraftRef} toggleInlineStyle={toggleInlineStyle} />
 
             <div onClick={() => console.log(state.toJS())}>Get the Data (See Console)</div>
         </div>
