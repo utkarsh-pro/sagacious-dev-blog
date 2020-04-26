@@ -19,6 +19,13 @@ import InlineToolbar from './InlineToolbar'
 import { getNodeFromKey } from './utility';
 import Button from '../Button';
 
+// ====================================================================================================
+
+export interface IBlogEditor {
+    readonly?: boolean;
+    content?: string;
+}
+
 // =====================================================================================================
 
 const EditorWrapper = (props: any) => {
@@ -59,11 +66,18 @@ const saveToLocalStorage = (data: ContentState) => {
     window.localStorage.setItem("article", jsonSerialised)
 }
 
+const getContentBlock = (content: string) => {
+    return convertFromRaw(JSON.parse(content))
+}
+
 // =====================================================================================================
 
-function BlogEditor() {
+function BlogEditor({ readonly, content }: IBlogEditor) {
 
-    const [state, setState] = useState(EditorState.createEmpty())
+    const [state, setState] = useState(
+        !content ? EditorState.createEmpty() : EditorState.createWithContent(getContentBlock(content))
+    )
+
     const [editorIsUp, setEditorIsUp] = useState(false)
 
     const DraftRef = useRef<DraftEditor>(null)
@@ -139,7 +153,7 @@ function BlogEditor() {
 
     const onChangeHandler = (state: EditorState) => setState(state)
     const focus = () => {
-        DraftRef.current?.focus()
+        if (!readonly) DraftRef.current?.focus()
     }
 
     const handleKeyCommand = (command: string, editorState: EditorState) => {
@@ -171,14 +185,14 @@ function BlogEditor() {
     return (
         <div className={Classes.container}>
             <div className={Classes.editor} onClick={focus}>
-                <SideToolbar editor={state} editorRef={DraftRef} toggleBlockStyle={toggleBlockType} />
-                <InlineToolbar editor={state} editorRef={DraftRef} toggleInlineStyle={toggleInlineStyle} />
+                {!readonly && <SideToolbar editor={state} editorRef={DraftRef} toggleBlockStyle={toggleBlockType} />}
+                {!readonly && <InlineToolbar editor={state} editorRef={DraftRef} toggleInlineStyle={toggleInlineStyle} />}
                 {/* Adding this because of incompatible types
                 // @ts-ignore */}
                 <DraftEditor
                     spellCheck
                     ref={DraftRef}
-                    readOnly={editorIsUp}
+                    readOnly={readonly || editorIsUp}
                     editorState={state}
                     onChange={onChangeHandler}
                     blockStyleFn={blockStyleFn}
@@ -186,8 +200,8 @@ function BlogEditor() {
                     handleKeyCommand={handleKeyCommand}
                     blockRendererFn={memoizedBockRendererFn} />
             </div>
-            <Button name="Save" onClick={memoizedSaveToStorageFn} className={Classes.btn} />
-            <Button name="Load from Memory" onClick={retreiveFromMemory} className={Classes.btn} />
+            {!readonly && <Button name="Save" onClick={memoizedSaveToStorageFn} className={Classes.btn} />}
+            {!readonly && <Button name="Load from Memory" onClick={retreiveFromMemory} className={Classes.btn} />}
         </div>
     );
 }
