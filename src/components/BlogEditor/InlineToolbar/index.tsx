@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Classes from './index.module.css'
+import { ReactComponent as Bold } from '../../../assets/svg/bold.svg'
+import { ReactComponent as Italic } from '../../../assets/svg/italic.svg'
+import { ReactComponent as Underline } from '../../../assets/svg/underline.svg'
 
 /**
  * @returns The selected area
@@ -27,31 +30,39 @@ export interface ToolbarConfig {
     children?: any
 }
 
-// ==================================== HELPER COMPONENT =======================
-const StyleButton = (props: any) => {
+interface IStyleButton {
+    onToggle: (style: string) => void;
+    active: boolean;
+    style: string;
+    label: JSX.Element;
+}
 
-    const onToggle = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+// ==================================== HELPER COMPONENT ========================
+
+const StyleButton = ({ onToggle, active, style, label }: IStyleButton) => {
+
+    const onToggleHandler = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
         e.preventDefault();
-        props.onToggle(props.style);
+        onToggle(style);
     };
 
     let className = Classes.styleButton;
-    if (props.active) {
+    if (active) {
         className += " " + Classes.activeButton;
     }
 
     return (
-        <span className={className} onMouseDown={onToggle}>
-            {props.label}
+        <span className={className} onMouseDown={onToggleHandler}>
+            {label}
         </span>
     );
 
 }
 
 const INLINE_STYLES = [
-    { label: 'Bold', style: 'BOLD' },
-    { label: 'Italic', style: 'ITALIC' },
-    { label: 'Underline', style: 'UNDERLINE' }
+    { label: <Bold className={Classes.icon} />, style: 'BOLD' },
+    { label: <Italic className={Classes.icon} />, style: 'ITALIC' },
+    { label: <Underline className={Classes.icon} />, style: 'UNDERLINE' }
 ];
 
 const InlineStyleControls = (props: any) => {
@@ -59,9 +70,9 @@ const InlineStyleControls = (props: any) => {
 
     return (
         <div className={Classes.controls}>
-            {INLINE_STYLES.map((type) =>
+            {INLINE_STYLES.map((type, idx) =>
                 <StyleButton
-                    key={type.label}
+                    key={`inline-style-${idx}`}
                     active={currentStyle.has(type.style)}
                     label={type.label}
                     onToggle={props.onToggle}
