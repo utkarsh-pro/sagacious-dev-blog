@@ -1,13 +1,23 @@
 import React, { useState, useCallback, useRef } from 'react'
 import Classes from './index.module.css'
 
-import { Editor as DraftEditor, EditorState, AtomicBlockUtils, RichUtils, getDefaultKeyBinding } from 'draft-js'
+import {
+    Editor as DraftEditor,
+    EditorState,
+    AtomicBlockUtils,
+    RichUtils,
+    getDefaultKeyBinding,
+    convertFromRaw,
+    convertToRaw,
+    ContentState
+} from 'draft-js'
 import 'draft-js/dist/Draft.css'
 
 import Editor from '../Editor';
 import SideToolbar from './SideToolbar'
 import InlineToolbar from './InlineToolbar'
 import { getNodeFromKey } from './utility';
+import Button from '../Button';
 
 // =====================================================================================================
 
@@ -43,6 +53,12 @@ const blockStyleFn = (ContentBlock: any) => {
     }
 }
 
+const saveToLocalStorage = (data: ContentState) => {
+    const rawData = convertToRaw(data)
+    const jsonSerialised = JSON.stringify(rawData)
+    window.localStorage.setItem("article", jsonSerialised)
+}
+
 // =====================================================================================================
 
 function BlogEditor() {
@@ -66,6 +82,20 @@ function BlogEditor() {
             }
         }
     }, [])
+
+    const memoizedSaveToStorageFn = useCallback(() => {
+        const content = state.getCurrentContent()
+        saveToLocalStorage(content)
+    }, [state])
+
+    const retreiveFromMemory = () => {
+        const rawDataString = window.localStorage.getItem("article")
+        if (rawDataString) {
+            const rawData = JSON.parse(rawDataString)
+            const contentState = convertFromRaw(rawData)
+            setState(EditorState.createWithContent(contentState))
+        }
+    }
 
     const toggleInlineStyle = (inlineStyle: string) => {
         setState(RichUtils.toggleInlineStyle(state, inlineStyle))
@@ -156,8 +186,8 @@ function BlogEditor() {
                     handleKeyCommand={handleKeyCommand}
                     blockRendererFn={memoizedBockRendererFn} />
             </div>
-
-            <div onClick={() => console.log(state.toJS())}>Get the Data (See Console)</div>
+            <Button name="Save" onClick={memoizedSaveToStorageFn} className={Classes.btn} />
+            <Button name="Load from Memory" onClick={retreiveFromMemory} className={Classes.btn} />
         </div>
     );
 }

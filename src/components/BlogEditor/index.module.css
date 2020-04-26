@@ -45,3 +45,8 @@
 .editor *:first-child, .editor *:first-child {
     margin-top: 0;
 }
+
+.btn {
+    margin: 2rem 1.5rem 0 0;
+    font-size: 1.2rem;
+}
