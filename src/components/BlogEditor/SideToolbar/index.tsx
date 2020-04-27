@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Classes from './index.module.css'
 import { ReactComponent as Plus } from '../../../assets/svg/plus.svg'
 import { ReactComponent as H1 } from '../../../assets/svg/heading.svg'
@@ -81,9 +81,28 @@ const BlockStyleControls = (props: any) => {
 // ==================================== COMPONENT ===============================
 
 function SideToolbar({ editor, editorRef, toggleBlockStyle }: ToolbarConfig) {
-    // const position = useRef({ top: 0, left: 0 })
+
     const [position, setPostion] = useState({ top: 0, left: 0 })
     const [show, setShow] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    /**
+     * memoizedClickHandler handles the mouse clicks
+     * Changes the state according to the location of
+     * mouse click
+     */
+    const memoizedClickHandler = useCallback((ev: MouseEvent) => {
+        if (ref.current?.contains(ev.target as Node)) return;
+        setShow(false);
+    }, [])
+
+
+    useEffect(() => {
+        document.addEventListener("mousedown", memoizedClickHandler);
+
+        return () => document.removeEventListener("mousedown", memoizedClickHandler)
+    }, [memoizedClickHandler])
+
 
     useEffect(() => {
         const selectionState = editor.getSelection()
@@ -112,7 +131,7 @@ function SideToolbar({ editor, editorRef, toggleBlockStyle }: ToolbarConfig) {
             <div className={Classes.iconContainer} onClick={() => setShow(!show)}>
                 <Plus className={Classes.plusIcon} />
             </div>
-            <div className={`${Classes.drawer} ${!show ? Classes.hide : Classes.show}`}>
+            <div ref={ref} className={`${Classes.drawer} ${!show ? Classes.hide : Classes.show}`}>
                 <BlockStyleControls
                     editorState={editor}
                     onToggle={(blockStyle: string) => {
