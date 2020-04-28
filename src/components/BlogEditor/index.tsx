@@ -87,6 +87,28 @@ const deserializeToContentState = (content: string) => {
     return convertFromRaw(JSON.parse(content))
 }
 
+/**
+ * Looks for older content and passed in content
+ * to initialize the state
+ * @param content 
+ */
+const initializeEditorState = (content?: string) => {
+    // If some content was passed in that initialize state from that
+    if (content) {
+        return EditorState.createWithContent(deserializeToContentState(content))
+    }
+
+    // If no content was provided then look for older saved value
+    const oldContent = retrieveFromLocalStorage({ key: "article" })
+    if (oldContent) {
+        return EditorState.createWithContent(deserializeToContentState(oldContent))
+    }
+
+    // If no content and older saved value was found then
+    // initialize the state from an empty object
+    return EditorState.createEmpty()
+}
+
 // =====================================================================================================
 
 function BlogEditor({ readonly, content }: IBlogEditor) {
@@ -94,13 +116,7 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
     /**
      * Stores the state of the editor
      */
-    const [state, setState] = useState(
-        !content
-            ?
-            EditorState.createEmpty()
-            :
-            EditorState.createWithContent(deserializeToContentState(content))
-    )
+    const [state, setState] = useState(initializeEditorState(content))
 
     /**
      * Stores the state if the code editor is active or not 
@@ -140,18 +156,6 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
     const saveToStorageFn = () => {
         const content = state.getCurrentContent()
         saveToLocalStorage({ content: serializeContentState(content) })
-    }
-
-    /**
-     * Retreives the data from local storage and sets
-     * the state accordingly
-     */
-    const retreiveFromMemory = () => {
-        const rawDataString = retrieveFromLocalStorage({ key: "article" })
-        if (rawDataString) {
-            const contentState = deserializeToContentState(rawDataString)
-            setState(EditorState.createWithContent(contentState))
-        }
     }
 
     /**
@@ -280,8 +284,6 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
                     blockRendererFn={memoizedBockRendererFn} />
             </div>
             {!readonly && <Button name="Show data" onClick={() => console.log(state.toJS())} className={Classes.btn} />}
-            {!readonly && <Button name="Save" onClick={saveToStorageFn} className={Classes.btn} />}
-            {!readonly && <Button name="Load from Memory" onClick={retreiveFromMemory} className={Classes.btn} />}
         </div>
     );
 }
