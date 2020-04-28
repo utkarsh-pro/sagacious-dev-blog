@@ -12,6 +12,8 @@ import {
     convertToRaw,
     ContentState
 } from 'draft-js'
+
+// Don't remove this! Check https://draftjs.org/docs/advanced-topics-issues-and-pitfalls#missing-draftcss
 import 'draft-js/dist/Draft.css'
 
 import SideToolbar from './SideToolbar'
