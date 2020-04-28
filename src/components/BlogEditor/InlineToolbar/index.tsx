@@ -8,14 +8,21 @@ import { ReactComponent as Underline } from '../../../assets/svg/underline.svg'
  * @returns The selected area
  */
 const getVisibleSelectionRect = () => {
-    const selection = window.getSelection()?.getRangeAt(0).getClientRects()
     let target: any = null;
+    // Putting it into try catch block because I observed a weird error
+    // Error: getRangeAt(0): 0 is not a valid index
+    // Couldn't replicate the error
+    try {
+        const selection = window.getSelection()?.getRangeAt(0).getClientRects()
 
-    if (selection?.length) {
-        if (selection[0].width === 0)
-            target = selection[1]
-        else
-            target = selection[0]
+        if (selection?.length) {
+            if (selection[0].width === 0)
+                target = selection[1]
+            else
+                target = selection[0]
+        }
+    } catch (error) {
+        console.error(error)
     }
 
     return target
@@ -104,7 +111,6 @@ function InlineToolbar({ editor, editorRef, toggleInlineStyle }: ToolbarConfig) 
             // but rather with a small offset so the caret doesn't overlap with the text.
             const offset = (16 * 0.5);
             const offsetTop = window.pageYOffset || document.documentElement.scrollTop
-            console.log(offsetTop)
 
             setPostion({
                 top: (selectionRect.top + offsetTop - offset),

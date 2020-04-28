@@ -28,7 +28,10 @@ const CodeEditorWrapper = (props: ICodeEditorWrapper) => {
         // that no "code" prop of the Editor is not
         // directly associated with a wrapper prop
         // Hence it avoids rerenders on each click
-        setInitCode(contentState.getEntity(block.getEntityAt(0))?.getData()['content'])
+        const entityKey = block.getEntityAt(0);
+
+        if (entityKey)
+            setInitCode(contentState.getEntity(entityKey)?.getData()['content'])
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -53,6 +56,7 @@ const CodeEditorWrapper = (props: ICodeEditorWrapper) => {
     const onChange = (code: string) => {
         const entityKey = block.getEntityAt(0);
         if (entityKey) {
+            console.log("Here")
             const newContentState = contentState.mergeEntityData(
                 entityKey,
                 { content: code, language: blockProps.language }

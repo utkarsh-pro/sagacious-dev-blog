@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import CodeEditorWrapper from './CodeEditorWrapper'
 import Classes from './index.module.css'
 
@@ -129,6 +129,15 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
     const DraftRef = useRef<DraftEditor>(null)
 
     /**
+     * saveToStorageFn stores the editor contentState 
+     * into the local storage
+     */
+    const saveToStorageFn = useCallback(() => {
+        const content = state.getCurrentContent()
+        saveToLocalStorage({ content: serializeContentState(content) })
+    }, [state])
+
+    /**
      * Memoized implementation of the renderer function
      */
     const memoizedBockRendererFn = useCallback((block) => {
@@ -149,14 +158,9 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
         }
     }, [])
 
-    /**
-     * saveToStorageFn stores the editor contentState 
-     * into the local storage
-     */
-    const saveToStorageFn = () => {
-        const content = state.getCurrentContent()
-        saveToLocalStorage({ content: serializeContentState(content) })
-    }
+    useEffect(() => {
+        saveToStorageFn()
+    }, [saveToStorageFn, state])
 
     /**
      * toggleInlineStyle toggles the inline style 
