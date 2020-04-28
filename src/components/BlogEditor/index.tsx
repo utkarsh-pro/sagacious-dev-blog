@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
+import CodeEditorWrapper from './CodeEditorWrapper'
 import Classes from './index.module.css'
 
 import {
@@ -13,54 +14,27 @@ import {
 } from 'draft-js'
 import 'draft-js/dist/Draft.css'
 
-import Editor from '../Editor';
 import SideToolbar from './SideToolbar'
 import InlineToolbar from './InlineToolbar'
 import { getNodeFromKey } from './utility';
 import Button from '../Button';
 
-// ====================================================================================================
+// ======================================== INTERFACES =============================================
 
+/**
+ * Interface for BlogEditor
+ */
 export interface IBlogEditor {
     readonly?: boolean;
     content?: string;
 }
 
-// =====================================================================================================
+// ========================================= HELPER FUNCTIONS =======================================
 
-const EditorWrapper = (props: any) => {
-    const { blockProps, block, contentState } = props;
-    const [initCode, setInitCode] = useState("")
-
-    useEffect(() => {
-        setInitCode(contentState.getEntity(block.getEntityAt(0))?.getData()['content'])
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    return (
-        <Editor
-            header
-            footer
-            onChange={(code) => {
-                const entityKey = block.getEntityAt(0);
-                if (entityKey) {
-                    const newContentState = contentState.mergeEntityData(
-                        entityKey,
-                        { content: code, language: blockProps.language }
-                    )
-                    blockProps.onFinishEdit(newContentState)
-                }
-            }}
-            code={initCode}
-            onBlur={() => blockProps.setEditorIsUp(false)}
-            onFocus={() => blockProps.setEditorIsUp(true)}
-            language={blockProps.language}
-            height={blockProps.height} />)
-}
-
-// ====================================================================================================
-
+/**
+ * Assigns custom classes to the draft js blocks
+ * @param ContentBlock 
+ */
 const blockStyleFn = (ContentBlock: any) => {
     const type = ContentBlock.getType();
     switch (type) {
@@ -81,12 +55,23 @@ const blockStyleFn = (ContentBlock: any) => {
     }
 }
 
+/**
+ * Converts the javascript state object into JSON
+ * and then stores it in the localstorage
+ * @param data 
+ */
 const saveToLocalStorage = (data: ContentState) => {
     const rawData = convertToRaw(data)
     const jsonSerialised = JSON.stringify(rawData)
     window.localStorage.setItem("article", jsonSerialised)
 }
 
+/**
+ * Receives the JSON object in string format
+ * Parses it into object and the converts it into
+ * a draft.js contentBlock
+ * @param content 
+ */
 const getContentBlock = (content: string) => {
     return convertFromRaw(JSON.parse(content))
 }
@@ -107,7 +92,7 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
         const type = block.getType();
         if (type === "atomic") {
             return {
-                component: EditorWrapper,
+                component: CodeEditorWrapper,
                 editable: false,
                 props: {
                     language: 'javascript',
