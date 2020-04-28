@@ -3,36 +3,6 @@ import Manoco from '@monaco-editor/react'
 
 import Classes from './index.module.css'
 
-// =============================== CONSTANTS ========================================
-export const SUPPORTED_LANGUAGES = [
-    "javascript",
-    "typescript",
-    "cpp",
-    "c",
-    "python",
-    "go",
-    "css",
-    "html",
-    "dockerfile",
-    "java",
-    "kotlin",
-    "markdown",
-    "lua",
-    "objective-c",
-    "pgsql",
-    "php",
-    "r",
-    "shell",
-    "ruby",
-    "rust",
-    "scss",
-    "sql",
-    "swift",
-    "xml",
-    "yaml",
-    ""
-]
-
 // =============================== INTERFACES =======================================
 
 export interface EditorProps {
@@ -51,17 +21,79 @@ export interface EditorProps {
 interface EditorBtnProps {
     onClick: (e: React.MouseEvent) => void;
     name: string;
+    setRef?: React.RefObject<HTMLDivElement>;
     options?: boolean;
 }
 
 interface SupportedLanguagesProps {
     onClick: (language: string) => void;
     setDisplay: () => void;
+    interrupt: (e: MouseEvent, currentRef: React.RefObject<HTMLDivElement>) => boolean;
 }
 
-// =============================== COMPONENTS =======================================
+export interface ISupportedLanguageMap {
+    [language: string]: {
+        displayName: string;
+    };
+}
 
-function EditorBtn({ onClick, name, options = false }: EditorBtnProps) {
+
+// =============================== CONSTANTS ========================================
+
+export const SUPPORTED_LANGUAGES: ISupportedLanguageMap = {
+    abap: { displayName: "ABAP (Advanced Business Application Programming)" },
+    apex: { displayName: "Apex" },
+    bat: { displayName: "Batch" },
+    clojure: { displayName: "Clojure" },
+    coffee: { displayName: "CoffeeScript" },
+    cpp: { displayName: "C++" },
+    csharp: { displayName: "C#" },
+    csp: { displayName: "CSP (Communication Sequential Processing)" },
+    css: { displayName: "CSS" },
+    dart: { displayName: "Dart" },
+    dockerfile: { displayName: "Dockerfile" },
+    fsharp: { displayName: "F#" },
+    go: { displayName: "Go (Golang)" },
+    graphql: { displayName: "Graphql" },
+    handlebars: { displayName: "Handlebars" },
+    html: { displayName: "HTML" },
+    java: { displayName: "Java" },
+    javascript: { displayName: "JavaScript" },
+    julia: { displayName: "Julia" },
+    kotlin: { displayName: "Kotlin" },
+    less: { displayName: "Less" },
+    lexon: { displayName: "Lexon" },
+    lua: { displayName: "Lua" },
+    markdown: { displayName: "Markdown" },
+    mips: { displayName: "MIPS" },
+    mysql: { displayName: "MySQL" },
+    "objective-c": { displayName: "Objective-C" },
+    pascal: { displayName: "Pascal" },
+    perl: { displayName: "Perl" },
+    pgsql: { displayName: "PGSQL" },
+    php: { displayName: "PHP" },
+    "": { displayName: "Plain Text" },
+    powershell: { displayName: "PowerShell" },
+    pug: { displayName: "pug" },
+    python: { displayName: "Python3" },
+    r: { displayName: "R" },
+    ruby: { displayName: "Ruby" },
+    rust: { displayName: "Rust" },
+    scss: { displayName: "SCSS" },
+    shell: { displayName: "Shell" },
+    sophia: { displayName: "Sopia" },
+    sql: { displayName: "SQL" },
+    swift: { displayName: "Swift" },
+    twig: { displayName: "Twig" },
+    typescript: { displayName: "TypeScript" },
+    vb: { displayName: "Visual Basic" },
+    xml: { displayName: "XML" },
+    yaml: { displayName: "YAML" }
+}
+
+// ========================================== COMPONENTS ====================================================
+
+function EditorBtn({ onClick, name, options = false, setRef }: EditorBtnProps) {
     const [clicked, setClicked] = useState(false)
     const onClickHander = (e: React.MouseEvent) => {
         setClicked(!clicked)
@@ -69,7 +101,7 @@ function EditorBtn({ onClick, name, options = false }: EditorBtnProps) {
     }
 
     return (
-        <div className={Classes.editorBtn} onClick={onClickHander}>
+        <div className={Classes.editorBtn} onClick={onClickHander} ref={setRef}>
             {options && <div className={[Classes.icon, clicked ? Classes.active : null].join(' ').trimEnd()}>&#9650;</div>}
             <div className={Classes.editorBtnName}>{name}</div>
         </div>
@@ -78,31 +110,32 @@ function EditorBtn({ onClick, name, options = false }: EditorBtnProps) {
 
 // ******************************************************************************************************************
 
-function SupportedLanguages({ onClick, setDisplay }: SupportedLanguagesProps) {
+function SupportedLanguages({ onClick, setDisplay, interrupt }: SupportedLanguagesProps) {
     const [value, setValue] = useState<string>('');
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        document.addEventListener("mousedown", handleClick);
+        document.addEventListener("mousedown", handleMouseDown);
 
         return () => {
-            return document.removeEventListener("mousedown", handleClick);
+            return document.removeEventListener("mousedown", handleMouseDown);
         }
 
         // eslint-disable-next-line
     }, [])
 
-    const handleClick = (e: MouseEvent) => {
-        if ((ref.current as Node).contains(e.target as Node)) return;
+    const handleMouseDown = (e: MouseEvent) => {
+        if (interrupt(e, ref)) return
         else setDisplay()
     }
+
 
     const onChange = (e: React.ChangeEvent) => {
         setValue((e.target as HTMLInputElement).value)
     }
 
     const onClickHander = (e: React.MouseEvent) => {
-        onClick((e.target as HTMLDivElement).innerText)
+        onClick((e.target as HTMLDivElement).getAttribute("data-lid") as string)
     }
 
     return (
@@ -116,10 +149,19 @@ function SupportedLanguages({ onClick, setDisplay }: SupportedLanguagesProps) {
                     onChange={onChange} />
             </div>
             <div className={Classes.sllist}>
-                {SUPPORTED_LANGUAGES
-                    .filter(sl => sl.toLocaleLowerCase().startsWith(value.toLocaleLowerCase()))
-                    .sort()
-                    .map((sl, i) => <div key={i} onClick={onClickHander}>{sl}</div>)
+                {
+                    Object
+                        .keys(SUPPORTED_LANGUAGES)
+                        .map((sl, i) => {
+                            const name = SUPPORTED_LANGUAGES[sl].displayName;
+                            if (value) {
+                                if (name.toLocaleLowerCase().startsWith(value.toLocaleLowerCase()))
+                                    return <div key={i} data-lid={sl} onClick={onClickHander}>{name}</div>
+                            } else {
+                                return <div key={i} data-lid={sl} onClick={onClickHander}>{name}</div>
+                            }
+                            return null
+                        })
                 }
             </div>
         </div>
@@ -143,13 +185,15 @@ function Header() {
 
 function getHeight(renderFooter: boolean, renderHeader: boolean) {
     let height = 0;
+    const HEADER_HEIGHT = 1.95 // If height of header is changed in CSS then change it here also
+    const FOOTER_HEIGHT = 1.5 // If height of footer is changed in CSS then change it here also
 
     switch (true) {
         case renderFooter:
-            height += 1.5
+            height += FOOTER_HEIGHT
             break;
         case renderHeader:
-            height += 1.5
+            height += HEADER_HEIGHT
             break;
         default:
             break;
@@ -178,6 +222,7 @@ function Editor({
     const [displayOptions, setDisplayOptions] = useState<boolean>(false)
 
     const ref = useRef<any>(null)
+    const languageSelectorRef = useRef<HTMLDivElement>(null)
 
     const setEditableHandler = () => setEditable(!editable)
     const setDisplayHandler = () => setDisplayOptions(!displayOptions)
@@ -199,6 +244,16 @@ function Editor({
         }
     }
 
+    const interrupt = (e: MouseEvent, currentRef: React.RefObject<HTMLDivElement>) => {
+        const currentNode = currentRef.current as Node;
+        const targetNode = e.target as Node;
+        console.log(languageSelectorRef.current)
+        if ((languageSelectorRef.current as Node).contains(targetNode) || currentNode.contains(targetNode))
+            return true;
+
+        return false;
+    }
+
     return (
         <div className={className} style={{ height }}>
             <div className={Classes.editor}>
@@ -206,7 +261,10 @@ function Editor({
                     displayOptions
                     &&
                     <div className={Classes.option}>
-                        <SupportedLanguages onClick={setCurrentLanguage} setDisplay={setDisplayHandler} />
+                        <SupportedLanguages
+                            interrupt={interrupt}
+                            onClick={setCurrentLanguage}
+                            setDisplay={setDisplayHandler} />
                     </div>
                 }
                 {header && <Header />}
@@ -221,7 +279,11 @@ function Editor({
                     footer
                     &&
                     <div className={Classes.bottom}>
-                        <EditorBtn onClick={setDisplayHandler} name={currentLanguage.toLocaleUpperCase()} options />
+                        <EditorBtn
+                            setRef={languageSelectorRef}
+                            onClick={setDisplayHandler}
+                            name={SUPPORTED_LANGUAGES[currentLanguage].displayName}
+                            options />
                         <EditorBtn onClick={setEditableHandler} name={`Edit: ${editable}`} />
                     </div>
                 }

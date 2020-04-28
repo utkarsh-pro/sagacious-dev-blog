@@ -13,7 +13,7 @@ export interface CodePreviewProps {
 
 // ======================= COMPONENT =============================
 function PreviewCode({ language, code, config }: CodePreviewProps) {
-    if (!SUPPORTED_LANGUAGES.includes(language)) return <div />
+    if (!SUPPORTED_LANGUAGES[language]) return <div />
     return (
         <Editor
             language={language}
