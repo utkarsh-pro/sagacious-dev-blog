@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import Classes from './index.module.css'
 
 import {
@@ -29,11 +29,30 @@ export interface IBlogEditor {
 // =====================================================================================================
 
 const EditorWrapper = (props: any) => {
-    const { blockProps } = props;
+    const { blockProps, block, contentState } = props;
+    const [initCode, setInitCode] = useState("")
+
+    useEffect(() => {
+        setInitCode(contentState.getEntity(block.getEntityAt(0))?.getData()['content'])
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     return (
         <Editor
             header
             footer
+            onChange={(code) => {
+                const entityKey = block.getEntityAt(0);
+                if (entityKey) {
+                    const newContentState = contentState.mergeEntityData(
+                        entityKey,
+                        { content: code, language: blockProps.language }
+                    )
+                    blockProps.onFinishEdit(newContentState)
+                }
+            }}
+            code={initCode}
             onBlur={() => blockProps.setEditorIsUp(false)}
             onFocus={() => blockProps.setEditorIsUp(true)}
             language={blockProps.language}
@@ -89,11 +108,14 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
         if (type === "atomic") {
             return {
                 component: EditorWrapper,
-                editable: true,
+                editable: false,
                 props: {
                     language: 'javascript',
                     height: "20rem",
-                    setEditorIsUp
+                    setEditorIsUp,
+                    onFinishEdit: (newContentState: any) => {
+                        setState(EditorState.createWithContent(newContentState))
+                    }
                 }
             }
         }
@@ -130,7 +152,7 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
                 state,
                 { currentContent: contentStateWithEntity }
             );
-            const newState = AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, "")
+            const newState = AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, " ")
             setState(newState)
 
             // Get a reference to monaco instance
@@ -154,9 +176,8 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
     }
 
     const onChangeHandler = (state: EditorState) => setState(state)
-    const focus = () => {
-        if (!readonly) DraftRef.current?.focus()
-    }
+
+    const focus = () => { if (!readonly) DraftRef.current?.focus() }
 
     const handleKeyCommand = (command: string, editorState: EditorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -168,12 +189,18 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
     }
 
     const mapKeyToEditorCommand = (e: any) => {
+
+        setTimeout(() => {
+            // Store to localstorage
+            memoizedSaveToStorageFn()
+        }, 0)
+
+        // Change tab functionality
         if (e.keyCode === 9 /* TAB */) {
-            console.log("Here")
             const newEditorState = RichUtils.onTab(
                 e,
                 state,
-                8, /* maxDepth */
+                4, /* maxDepth */
             );
             if (newEditorState !== state) {
                 setState(newEditorState);
@@ -202,6 +229,7 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
                     handleKeyCommand={handleKeyCommand}
                     blockRendererFn={memoizedBockRendererFn} />
             </div>
+            {!readonly && <Button name="Show data" onClick={() => console.log(state.toJS())} className={Classes.btn} />}
             {!readonly && <Button name="Save" onClick={memoizedSaveToStorageFn} className={Classes.btn} />}
             {!readonly && <Button name="Load from Memory" onClick={retreiveFromMemory} className={Classes.btn} />}
         </div>

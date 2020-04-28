@@ -40,12 +40,17 @@ export interface ISupportedLanguageMap {
 }
 
 
-// =============================== CONSTANTS ========================================
+// ========================================== CONSTANTS ===================================================
 
 export { SUPPORTED_LANGUAGES }
 
 // ========================================== COMPONENTS ====================================================
 
+/**
+ * EditorBtn renders the functional buttons present at the bottom of the
+ * monaco editor
+ * @param param0 
+ */
 function EditorBtn({ onClick, name, options = false, setRef, active = false }: EditorBtnProps) {
     const onClickHander = (e: React.MouseEvent) => {
         onClick(e)
@@ -59,8 +64,11 @@ function EditorBtn({ onClick, name, options = false, setRef, active = false }: E
     )
 }
 
-// ******************************************************************************************************************
-
+/**
+ * SupportedLanguages componenet renders the supported languages
+ * menu along with the search component
+ * @param param0 
+ */
 function SupportedLanguages({ onClick, setDisplay, interrupt }: SupportedLanguagesProps) {
     const [value, setValue] = useState<string>('');
     const ref = useRef<HTMLDivElement>(null);
@@ -119,7 +127,9 @@ function SupportedLanguages({ onClick, setDisplay, interrupt }: SupportedLanguag
     )
 }
 
-// ******************************************************************************************************************
+/**
+ * Header returns JSX for the header of the Monaco editor
+ */
 function Header() {
     return (
         <div className={Classes.head}>
@@ -130,10 +140,13 @@ function Header() {
     )
 }
 
-// ******************************************************************************************************************
-
 // =========================================== HELPER FUNCTION ===========================================
 
+/**
+ * getHeight returns the calcualated height for the editor
+ * @param renderFooter 
+ * @param renderHeader 
+ */
 function getHeight(renderFooter: boolean, renderHeader: boolean) {
     let height = 0;
     const HEADER_HEIGHT = 1.95 // If height of header is changed in CSS then change it here also
