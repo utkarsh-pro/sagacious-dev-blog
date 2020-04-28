@@ -80,14 +80,26 @@ const getContentBlock = (content: string) => {
 
 function BlogEditor({ readonly, content }: IBlogEditor) {
 
+    /**
+     * Stores the state of the editor
+     */
     const [state, setState] = useState(
         !content ? EditorState.createEmpty() : EditorState.createWithContent(getContentBlock(content))
     )
 
+    /**
+     * Stores the state if the code editor is active or not 
+     */
     const [editorIsUp, setEditorIsUp] = useState(false)
 
+    /**
+     * Reference to the draft editor
+     */
     const DraftRef = useRef<DraftEditor>(null)
 
+    /**
+     * Memoized implementation of the renderer function
+     */
     const memoizedBockRendererFn = useCallback((block) => {
         const type = block.getType();
         if (type === "atomic") {
@@ -106,11 +118,19 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
         }
     }, [])
 
-    const memoizedSaveToStorageFn = useCallback(() => {
+    /**
+     * saveToStorageFn stores the editor contentState 
+     * into the local storage
+     */
+    const saveToStorageFn = () => {
         const content = state.getCurrentContent()
         saveToLocalStorage(content)
-    }, [state])
+    }
 
+    /**
+     * Retreives the data from local storage and sets
+     * the state accordingly
+     */
     const retreiveFromMemory = () => {
         const rawDataString = window.localStorage.getItem("article")
         if (rawDataString) {
@@ -120,10 +140,27 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
         }
     }
 
+    /**
+     * toggleInlineStyle toggles the inline style 
+     * for the draftjs blocks
+     * @param inlineStyle 
+     */
     const toggleInlineStyle = (inlineStyle: string) => {
         setState(RichUtils.toggleInlineStyle(state, inlineStyle))
     }
 
+    /**
+     * Handler for toggling the block type
+     * Has additional implementation to modify the
+     * behaviour of the custom code editor
+     * 
+     * It ensures that the draft wrapper around the code
+     * editor has set contentEditable to false.
+     * 
+     * NOTE: Not doing so will create problems like
+     * draft taking control over the input on code editor!
+     * @param blockType 
+     */
     const toggleBlockType = (blockType: string) => {
         if (blockType !== "atomic")
             setState(RichUtils.toggleBlockType(state, blockType));
@@ -160,10 +197,22 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
         }
     }
 
+    /**
+     * onChangeHandler wraps setState
+     * @param state 
+     */
     const onChangeHandler = (state: EditorState) => setState(state)
 
+    /**
+     * focus function handles the focus on the draft editor
+     */
     const focus = () => { if (!readonly) DraftRef.current?.focus() }
 
+    /**
+     * Handles the basic key commands on the editor
+     * @param command 
+     * @param editorState 
+     */
     const handleKeyCommand = (command: string, editorState: EditorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
         if (newState) {
@@ -173,11 +222,15 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
         return false;
     }
 
+    /**
+     * Assigns speacial key mapping on the editor
+     * @param e 
+     */
     const mapKeyToEditorCommand = (e: any) => {
 
         setTimeout(() => {
             // Store to localstorage
-            memoizedSaveToStorageFn()
+            saveToStorageFn()
         }, 0)
 
         // Change tab functionality
@@ -215,7 +268,7 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
                     blockRendererFn={memoizedBockRendererFn} />
             </div>
             {!readonly && <Button name="Show data" onClick={() => console.log(state.toJS())} className={Classes.btn} />}
-            {!readonly && <Button name="Save" onClick={memoizedSaveToStorageFn} className={Classes.btn} />}
+            {!readonly && <Button name="Save" onClick={saveToStorageFn} className={Classes.btn} />}
             {!readonly && <Button name="Load from Memory" onClick={retreiveFromMemory} className={Classes.btn} />}
         </div>
     );

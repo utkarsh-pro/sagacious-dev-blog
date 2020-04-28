@@ -48,9 +48,9 @@ const CodeEditorWrapper = (props: ICodeEditorWrapper) => {
     }, [blockProps])
 
     /**
-     * Memoized implementation of onChange handler
+     * Implementation of onChange handler
      */
-    const memoizedOnChange = useCallback((code: string) => {
+    const onChange = (code: string) => {
         const entityKey = block.getEntityAt(0);
         if (entityKey) {
             const newContentState = contentState.mergeEntityData(
@@ -59,13 +59,13 @@ const CodeEditorWrapper = (props: ICodeEditorWrapper) => {
             )
             blockProps.onFinishEdit(newContentState)
         }
-    }, [blockProps, block, contentState])
+    }
 
     return (
         <Editor
             header
             footer
-            onChange={memoizedOnChange}
+            onChange={onChange}
             code={initCode}
             onBlur={memoizedOnBlur}
             onFocus={memoizedOnFocus}
