@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import Manoco from '@monaco-editor/react'
+import { SUPPORTED_LANGUAGES } from './supportedLanguages'
 
 import Classes from './index.module.css'
 
@@ -41,56 +42,7 @@ export interface ISupportedLanguageMap {
 
 // =============================== CONSTANTS ========================================
 
-export const SUPPORTED_LANGUAGES: ISupportedLanguageMap = {
-    abap: { displayName: "ABAP (Advanced Business Application Programming)" },
-    apex: { displayName: "Apex" },
-    bat: { displayName: "Batch" },
-    clojure: { displayName: "Clojure" },
-    coffee: { displayName: "CoffeeScript" },
-    cpp: { displayName: "C++" },
-    csharp: { displayName: "C#" },
-    csp: { displayName: "CSP (Communication Sequential Processing)" },
-    css: { displayName: "CSS" },
-    dart: { displayName: "Dart" },
-    dockerfile: { displayName: "Dockerfile" },
-    fsharp: { displayName: "F#" },
-    go: { displayName: "Go (Golang)" },
-    graphql: { displayName: "Graphql" },
-    handlebars: { displayName: "Handlebars" },
-    html: { displayName: "HTML" },
-    java: { displayName: "Java" },
-    javascript: { displayName: "JavaScript" },
-    julia: { displayName: "Julia" },
-    kotlin: { displayName: "Kotlin" },
-    less: { displayName: "Less" },
-    lexon: { displayName: "Lexon" },
-    lua: { displayName: "Lua" },
-    markdown: { displayName: "Markdown" },
-    mips: { displayName: "MIPS" },
-    mysql: { displayName: "MySQL" },
-    "objective-c": { displayName: "Objective-C" },
-    pascal: { displayName: "Pascal" },
-    perl: { displayName: "Perl" },
-    pgsql: { displayName: "PGSQL" },
-    php: { displayName: "PHP" },
-    "": { displayName: "Plain Text" },
-    powershell: { displayName: "PowerShell" },
-    pug: { displayName: "pug" },
-    python: { displayName: "Python3" },
-    r: { displayName: "R" },
-    ruby: { displayName: "Ruby" },
-    rust: { displayName: "Rust" },
-    scss: { displayName: "SCSS" },
-    shell: { displayName: "Shell" },
-    sophia: { displayName: "Sopia" },
-    sql: { displayName: "SQL" },
-    swift: { displayName: "Swift" },
-    twig: { displayName: "Twig" },
-    typescript: { displayName: "TypeScript" },
-    vb: { displayName: "Visual Basic" },
-    xml: { displayName: "XML" },
-    yaml: { displayName: "YAML" }
-}
+export { SUPPORTED_LANGUAGES }
 
 // ========================================== COMPONENTS ====================================================
 
@@ -242,7 +194,6 @@ function Editor({
     const interrupt = (e: MouseEvent, currentRef: React.RefObject<HTMLDivElement>) => {
         const currentNode = currentRef.current as Node;
         const targetNode = e.target as Node;
-        console.log(languageSelectorRef.current)
         if ((languageSelectorRef.current as Node).contains(targetNode) || currentNode.contains(targetNode))
             return true;
 
