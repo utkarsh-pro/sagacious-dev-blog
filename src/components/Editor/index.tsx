@@ -11,7 +11,7 @@ export interface EditorProps {
     code?: string;
     readOnly?: boolean;
     className?: string;
-    onChange?: (content: any) => void;
+    onChange?: (content: any, language?: string) => void;
     header?: boolean;
     footer?: boolean;
     height?: string;
@@ -181,10 +181,15 @@ function Editor({
     const [displayOptions, setDisplayOptions] = useState<boolean>(false)
 
     const ref = useRef<any>(null)
+    const currentLanguageRef = useRef<string>(currentLanguage)
     const languageSelectorRef = useRef<HTMLDivElement>(null)
 
     const setEditableHandler = () => setEditable(!editable)
     const setDisplayHandler = () => setDisplayOptions(!displayOptions)
+    const setCurrentLanguageHandler = (language: string) => {
+        currentLanguageRef.current = language;
+        setCurrentLanguage(language)
+    }
 
     const handleMount = (_valueGetter: any, editor: any) => {
         ref.current = editor;
@@ -199,7 +204,7 @@ function Editor({
 
         if (typeof onChange === "function") {
             ref.current.onDidChangeModelContent((ev: any) => {
-                onChange(ref.current.getValue());
+                onChange(ref.current.getValue(), currentLanguageRef.current);
             })
         }
     }
@@ -213,6 +218,10 @@ function Editor({
         return false;
     }
 
+    useEffect(() => {
+        setCurrentLanguageHandler(language)
+    }, [language])
+
     return (
         <div className={className} style={{ height }}>
             <div className={Classes.editor}>
@@ -222,7 +231,7 @@ function Editor({
                     <div className={Classes.option}>
                         <SupportedLanguages
                             interrupt={interrupt}
-                            onClick={setCurrentLanguage}
+                            onClick={setCurrentLanguageHandler}
                             setDisplay={setDisplayHandler} />
                     </div>
                 }

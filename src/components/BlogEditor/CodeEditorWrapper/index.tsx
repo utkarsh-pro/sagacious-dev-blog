@@ -21,7 +21,7 @@ export interface ICodeEditorWrapper {
  */
 const CodeEditorWrapper = (props: ICodeEditorWrapper) => {
     const { blockProps, block, contentState } = props;
-    const [initCode, setInitCode] = useState("")
+    const [init, setInit] = useState({ code: "", language: blockProps.language })
 
     useEffect(() => {
         // This sets the initial code while also making sure
@@ -30,8 +30,11 @@ const CodeEditorWrapper = (props: ICodeEditorWrapper) => {
         // Hence it avoids rerenders on each click
         const entityKey = block.getEntityAt(0);
 
-        if (entityKey)
-            setInitCode(contentState.getEntity(entityKey)?.getData()['content'])
+        if (entityKey) {
+            const data = contentState.getEntity(entityKey)?.getData()
+            const newState = { code: data['content'], language: data['language'] }
+            setInit(newState)
+        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -53,14 +56,14 @@ const CodeEditorWrapper = (props: ICodeEditorWrapper) => {
     /**
      * Implementation of onChange handler
      */
-    const onChange = (code: string) => {
+    const onChange = (code: string, language?: string) => {
         const entityKey = block.getEntityAt(0);
         if (entityKey) {
-            console.log("Here")
             const newContentState = contentState.mergeEntityData(
                 entityKey,
-                { content: code, language: blockProps.language }
+                { content: code, language: language || blockProps.language }
             )
+            console.log(language)
             blockProps.onFinishEdit(newContentState)
         }
     }
@@ -70,10 +73,10 @@ const CodeEditorWrapper = (props: ICodeEditorWrapper) => {
             header
             footer
             onChange={onChange}
-            code={initCode}
+            code={init.code}
             onBlur={memoizedOnBlur}
             onFocus={memoizedOnFocus}
-            language={blockProps.language}
+            language={init.language}
             height={blockProps.height} />)
 }
 
