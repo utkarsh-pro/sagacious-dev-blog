@@ -18,7 +18,7 @@ import 'draft-js/dist/Draft.css'
 
 import SideToolbar from './SideToolbar'
 import InlineToolbar from './InlineToolbar'
-import { getNodeFromKey } from './utility';
+import { getNodeFromKey, saveToLocalStorageHOF, retrieveFromLocalStorageHOF } from './utility';
 import Button from '../Button';
 
 // ======================================== INTERFACES =============================================
@@ -62,10 +62,19 @@ const blockStyleFn = (ContentBlock: any) => {
  * and then stores it in the localstorage
  * @param data 
  */
-const saveToLocalStorage = (data: ContentState) => {
-    const rawData = convertToRaw(data)
-    const jsonSerialised = JSON.stringify(rawData)
-    window.localStorage.setItem("article", jsonSerialised)
+const saveToLocalStorage = saveToLocalStorageHOF()
+
+/**
+ * Retreive the data from local storage
+ */
+const retrieveFromLocalStorage = retrieveFromLocalStorageHOF();
+
+/**
+ * serializeContentState serializes the content state into string
+ * @param contentState 
+ */
+const serializeContentState = (contentState: ContentState) => {
+    return JSON.stringify(convertToRaw(contentState))
 }
 
 /**
@@ -74,7 +83,7 @@ const saveToLocalStorage = (data: ContentState) => {
  * a draft.js contentBlock
  * @param content 
  */
-const getContentBlock = (content: string) => {
+const deserializeToContentState = (content: string) => {
     return convertFromRaw(JSON.parse(content))
 }
 
@@ -86,7 +95,11 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
      * Stores the state of the editor
      */
     const [state, setState] = useState(
-        !content ? EditorState.createEmpty() : EditorState.createWithContent(getContentBlock(content))
+        !content
+            ?
+            EditorState.createEmpty()
+            :
+            EditorState.createWithContent(deserializeToContentState(content))
     )
 
     /**
@@ -126,7 +139,7 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
      */
     const saveToStorageFn = () => {
         const content = state.getCurrentContent()
-        saveToLocalStorage(content)
+        saveToLocalStorage({ content: serializeContentState(content) })
     }
 
     /**
@@ -134,10 +147,9 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
      * the state accordingly
      */
     const retreiveFromMemory = () => {
-        const rawDataString = window.localStorage.getItem("article")
+        const rawDataString = retrieveFromLocalStorage({ key: "article" })
         if (rawDataString) {
-            const rawData = JSON.parse(rawDataString)
-            const contentState = convertFromRaw(rawData)
+            const contentState = deserializeToContentState(rawDataString)
             setState(EditorState.createWithContent(contentState))
         }
     }
@@ -230,10 +242,8 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
      */
     const mapKeyToEditorCommand = (e: any) => {
 
-        setTimeout(() => {
-            // Store to localstorage
-            saveToStorageFn()
-        }, 0)
+        // Save to local storage on each key press
+        saveToStorageFn()
 
         // Change tab functionality
         if (e.keyCode === 9 /* TAB */) {
