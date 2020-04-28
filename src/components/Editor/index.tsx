@@ -21,6 +21,7 @@ export interface EditorProps {
 interface EditorBtnProps {
     onClick: (e: React.MouseEvent) => void;
     name: string;
+    active: boolean;
     setRef?: React.RefObject<HTMLDivElement>;
     options?: boolean;
 }
@@ -93,16 +94,14 @@ export const SUPPORTED_LANGUAGES: ISupportedLanguageMap = {
 
 // ========================================== COMPONENTS ====================================================
 
-function EditorBtn({ onClick, name, options = false, setRef }: EditorBtnProps) {
-    const [clicked, setClicked] = useState(false)
+function EditorBtn({ onClick, name, options = false, setRef, active = false }: EditorBtnProps) {
     const onClickHander = (e: React.MouseEvent) => {
-        setClicked(!clicked)
         onClick(e)
     }
 
     return (
         <div className={Classes.editorBtn} onClick={onClickHander} ref={setRef}>
-            {options && <div className={[Classes.icon, clicked ? Classes.active : null].join(' ').trimEnd()}>&#9650;</div>}
+            {options && <div className={[Classes.icon, active ? Classes.active : null].join(' ').trimEnd()}>&#9650;</div>}
             <div className={Classes.editorBtnName}>{name}</div>
         </div>
     )
@@ -188,16 +187,11 @@ function getHeight(renderFooter: boolean, renderHeader: boolean) {
     const HEADER_HEIGHT = 1.95 // If height of header is changed in CSS then change it here also
     const FOOTER_HEIGHT = 1.5 // If height of footer is changed in CSS then change it here also
 
-    switch (true) {
-        case renderFooter:
-            height += FOOTER_HEIGHT
-            break;
-        case renderHeader:
-            height += HEADER_HEIGHT
-            break;
-        default:
-            break;
-    }
+    if (renderFooter)
+        height += FOOTER_HEIGHT
+
+    if (renderHeader)
+        height += HEADER_HEIGHT
 
     return height
 }
@@ -226,6 +220,7 @@ function Editor({
 
     const setEditableHandler = () => setEditable(!editable)
     const setDisplayHandler = () => setDisplayOptions(!displayOptions)
+
     const handleMount = (_valueGetter: any, editor: any) => {
         ref.current = editor;
 
@@ -280,11 +275,12 @@ function Editor({
                     &&
                     <div className={Classes.bottom}>
                         <EditorBtn
+                            active={displayOptions}
                             setRef={languageSelectorRef}
                             onClick={setDisplayHandler}
                             name={SUPPORTED_LANGUAGES[currentLanguage].displayName}
                             options />
-                        <EditorBtn onClick={setEditableHandler} name={`Edit: ${editable}`} />
+                        <EditorBtn active={false} onClick={setEditableHandler} name={`Edit: ${editable}`} />
                     </div>
                 }
             </div>

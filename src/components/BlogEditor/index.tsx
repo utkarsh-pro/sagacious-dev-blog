@@ -32,6 +32,8 @@ const EditorWrapper = (props: any) => {
     const { blockProps } = props;
     return (
         <Editor
+            header
+            footer
             onBlur={() => blockProps.setEditorIsUp(false)}
             onFocus={() => blockProps.setEditorIsUp(true)}
             language={blockProps.language}
