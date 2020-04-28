@@ -31,6 +31,8 @@ interface SupportedLanguagesProps {
     onClick: (language: string) => void;
     setDisplay: () => void;
     interrupt: (e: MouseEvent, currentRef: React.RefObject<HTMLDivElement>) => boolean;
+    onBlur?: (event?: any) => void;
+    onFocus?: (event?: any) => void;
 }
 
 export interface ISupportedLanguageMap {
@@ -69,12 +71,26 @@ function EditorBtn({ onClick, name, options = false, setRef, active = false }: E
  * menu along with the search component
  * @param param0 
  */
-function SupportedLanguages({ onClick, setDisplay, interrupt }: SupportedLanguagesProps) {
+function SupportedLanguages({ onClick, setDisplay, interrupt, onBlur, onFocus }: SupportedLanguagesProps) {
     const [value, setValue] = useState<string>('');
     const ref = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         document.addEventListener("mousedown", handleMouseDown);
+        if (inputRef.current) {
+            inputRef.current.onfocus = (ev) => {
+                console.log("[FOCUSED]")
+                if (onFocus) onFocus(ev)
+            }
+
+            inputRef.current.onblur = (ev) => {
+                console.log("[BLURRED]")
+                if (onBlur) onBlur(ev)
+            }
+
+            inputRef.current.focus()
+        }
 
         return () => {
             return document.removeEventListener("mousedown", handleMouseDown);
@@ -101,8 +117,8 @@ function SupportedLanguages({ onClick, setDisplay, interrupt }: SupportedLanguag
         <div className={Classes.SL} ref={ref}>
             <div className={Classes.slinputContainer}>
                 <input
+                    ref={inputRef}
                     className={Classes.slinput}
-                    autoFocus
                     placeholder="Set Language"
                     value={value}
                     onChange={onChange} />
@@ -209,6 +225,7 @@ function Editor({
         }
     }
 
+
     const interrupt = (e: MouseEvent, currentRef: React.RefObject<HTMLDivElement>) => {
         const currentNode = currentRef.current as Node;
         const targetNode = e.target as Node;
@@ -230,6 +247,8 @@ function Editor({
                     &&
                     <div className={Classes.option}>
                         <SupportedLanguages
+                            onBlur={onBlur}
+                            onFocus={onFocus}
                             interrupt={interrupt}
                             onClick={setCurrentLanguageHandler}
                             setDisplay={setDisplayHandler} />

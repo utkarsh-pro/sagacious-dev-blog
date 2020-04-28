@@ -190,7 +190,7 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
         else {
             // Add Monaco editor to the current state
             const contentState = state.getCurrentContent()
-            const contentStateWithEntity = contentState.createEntity("MONACO", "MUTABLE");
+            const contentStateWithEntity = contentState.createEntity("MONACO", "IMMUTABLE");
             const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
             const newEditorState = EditorState.set(
                 state,
