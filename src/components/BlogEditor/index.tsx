@@ -153,9 +153,9 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
             setTimeout(() => {
                 const monaocoParent = getNodeFromKey(monacoKey);
 
-                const divReferenceToMonaocParent = (monaocoParent as HTMLDivElement);
+                const divReferenceToMonacoParent = (monaocoParent as HTMLDivElement);
 
-                divReferenceToMonaocParent.contentEditable = "false"
+                divReferenceToMonacoParent.contentEditable = "false"
             }, 0)
         }
     }
