@@ -1,5 +1,5 @@
 .nav {
-    padding: 3rem 0;
+    padding: 3rem 0 0.5rem;
     font-size: 1.25rem;
     position: fixed;
     top: 0;
@@ -7,6 +7,7 @@
     width: 100%;
     z-index: 1000;
     transition: 0.4s;
+    border-bottom: 1px solid var(--black-border);
 }
 
 .navmin {

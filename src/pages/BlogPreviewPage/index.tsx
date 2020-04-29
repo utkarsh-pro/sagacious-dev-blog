@@ -4,14 +4,16 @@ import Classes from './index.module.css'
 
 import Global from '../../global/global.module.css'
 
-function BlogEditorPage() {
+function BlogPreviewPage() {
     return (
-        <div className={Classes.wrapper}>
+        <div className={Classes.page}>
             <div className={`${Global.container} ${Classes.container}`}>
-                <BlogEditor className={Classes.editor} />
+                <article className={Classes.content}>
+                    <BlogEditor readonly />
+                </article>
             </div>
         </div>
     )
 }
 
-export default BlogEditorPage
+export default BlogPreviewPage

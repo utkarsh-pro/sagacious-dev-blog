@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Classes from './App.module.css';
 import LandingPage from './pages/LandingPage';
 import BlogEditorPage from './pages/BlogEditorPage';
+import BlogPreviewPage from './pages/BlogPreviewPage';
 import WriteBlogPage from './pages/WriteBlogPage';
 import Login from './components/Login'
 
@@ -21,6 +22,9 @@ const App = () => {
           </Route>
           <Route path="/blog-editor">
             <BlogEditorPage />
+          </Route>
+          <Route path="/blog-preview">
+            <BlogPreviewPage />
           </Route>
           <Route path="/login">
             <Login />

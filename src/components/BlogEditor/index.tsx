@@ -29,6 +29,7 @@ import Button from '../Button';
 export interface IBlogEditor {
     readonly?: boolean;
     content?: string;
+    className?: string;
 }
 
 // ========================================= HELPER FUNCTIONS =======================================
@@ -111,7 +112,7 @@ const initializeEditorState = (content?: string) => {
 
 // =====================================================================================================
 
-function BlogEditor({ readonly, content }: IBlogEditor) {
+function BlogEditor({ readonly, content, className }: IBlogEditor) {
 
     /**
      * Stores the state of the editor
@@ -271,7 +272,7 @@ function BlogEditor({ readonly, content }: IBlogEditor) {
 
     return (
         <div className={Classes.container}>
-            <div className={Classes.editor} onClick={focus}>
+            <div className={[Classes.editor, className].join(" ")} onClick={focus}>
                 {!readonly && <SideToolbar editor={state} editorRef={DraftRef} toggleBlockStyle={toggleBlockType} />}
                 {!readonly && <InlineToolbar editor={state} editorRef={DraftRef} toggleInlineStyle={toggleInlineStyle} />}
                 {/* Adding this because of incompatible types

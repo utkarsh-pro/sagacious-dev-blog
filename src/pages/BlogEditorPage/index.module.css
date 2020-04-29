@@ -11,3 +11,7 @@
     background: #eef5fa;
     height: 100%;
 }
+
+.editor {
+    box-shadow: 0 24px 24px -18px rgba(69, 104, 129, .33), 0 9px 45px 0 rgba(114, 119, 160, .12);
+}
